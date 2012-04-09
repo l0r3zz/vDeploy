@@ -1,18 +1,18 @@
 vDeploy
 ----------
-vDeploy is a Python Package that contains utilitiies  to automatically
+vDeploy is a Python Package that contains utilities  to automatically
 and rapidly deploy VM images from "templates" that are stored on an
 object file store.  The VM template is an abstraction that has
 properties such that the type of VM to deploy is unlinked from the
 hypervisor that it is being deployed to.  For example, you may have a
 template of an OpenBSD Kerberous KDC host that you would like to
-commonly deploy to a tennant network. These tennant networks  could be
+commonly deploy to a tenant network. These tenant networks  could be
 running on vSphere, XenServer, KVM, or Hyper-V hypervisors.  The
 template object will be configurable as far as memory size, number of
 CPUs, number of NICs, VM name, root passwords, etc. In order to
 facilitate the deployment, the VM object may include different system
 disk images depending on what the destination hypervisor will be. There
-might even be  workflow rules to constitute an appropriate disk image
+might even be  work-flow rules to constitute an appropriate disk image
 from an initial ISO image.  The important point  here is that the
 bits  that makes up the target deployment are un linked and some what
 independent of the properties that describe the deployable instance.
