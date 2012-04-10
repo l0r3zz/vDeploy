@@ -17,19 +17,22 @@ import logging
 class mylog(logging.getLoggerClass()):
     def __init__(self,label,fh=None, fmt=None, cnsl=None):
         logging.Logger.__init__(self,label)
-        #self._logger = logging.getLogger(label)
+        
         if fmt :
             formatter = fmt
         else :
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter(
+                '%(asctime)s %(levelname)s\t:%(name)s [%(module)s:%(lineno)d] %(message)s')
         try:
             if fh :
+                open(fh,'w').close()
                 self._fh = logging.FileHandler(fh)
                 self._fh.setFormatter(formatter)
-                self._fh.setLevel(logging.ERROR)
-                self.addHandler(self_.fh)
-        except :
+                self._fh.setLevel(logging.WARN)
+                self.addHandler(self._fh)
+        except IOError :
             print("Can't open location %s" % fh)
+            
         if cnsl :
             self._ch = logging.StreamHandler()
             self._ch.setLevel(logging.INFO)
