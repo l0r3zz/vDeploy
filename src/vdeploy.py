@@ -11,13 +11,20 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+
+#! /usr/bin/env python
+
+"""
+Module Doc String
+"""
+
+import argparse
+
 LPORT_DEFAULT = 33777
 
 def main():
-    import argparse
 
     try: # catch ^C and exit
-
 
         parser = argparse.ArgumentParser(description="Deploy VMs into your cloud infrastructure")
 
@@ -37,10 +44,10 @@ def main():
         args = parser.parse_args()
 
 
-
     except KeyboardInterrupt:
         print ""
-        sys.exit(1)
+        return(1)
 
 if __name__ == "__main__":
-    main()
+    status = main()
+    sys.exit(status)

@@ -5,6 +5,13 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
+
+#! /usr/bin/env python
+
+"""
+Module DocString.
+"""
+import sys
 import logging
 
 class mylog(logging.getLoggerClass()):
@@ -25,6 +32,17 @@ class mylog(logging.getLoggerClass()):
             print("Can't open location %s" % fh)
         if cnsl :
             self._ch = logging.StreamHandler()
-            self._ch.setLevel(logging.ERROR)
+            self._ch.setLevel(logging.INFO)
             self._ch.setFormatter(formatter)
             self.addHandler(self._ch)
+            
+def main():
+    logger = mylog("Test Logger", cnsl=True)
+    logger.info("Hello World")
+    logger.warn("Danger Will Robinson")
+    logger.error("Time to Die")
+    return 0
+
+if __name__ == "__main__" :
+    main()
+    sys.exit(0)
