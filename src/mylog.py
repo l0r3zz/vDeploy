@@ -9,20 +9,39 @@
 #! /usr/bin/env python
 
 """
-Module DocString.
+Mylog module
+Subclasses standard python logging module and adds some convenience to it's use.
+Like being able to set GMT timestamps
 """
 import sys
+import time
 import logging
 
 class mylog(logging.getLoggerClass()):
-    def __init__(self,label,fh=None, fmt=None, cnsl=None):
+    def __init__(self,label,fh=None, fmt=None, gmt=True, cnsl=None):
+        """
+        Constructor for logging module
+        string:label     set the name of the logging provider
+        string:fh        pathname of file to log to, default is no logging to a file
+        string:fmt       custom format string, default will use built-in
+        bool:gmt         set to True to log in the machines vision of GMT time and reflect it in the logs
+        bool:cnsl        set to True if you want to log to console
+        
+        This returns a singleton
+        """
         logging.Logger.__init__(self,label)
         
         if fmt :
             formatter = fmt
+        elif gmt :
+            formatter = logging.Formatter(
+                '%(asctime)s:Z %(levelname)s:%(name)s [%(module)s:%(lineno)d] %(message)s')
         else :
             formatter = logging.Formatter(
-                '%(asctime)s %(levelname)s\t:%(name)s [%(module)s:%(lineno)d] %(message)s')
+                '%(asctime)s %(levelname)s\t:%(name)s [%(module)s:%(lineno)d] %(message)s')     
+        if gmt:
+            logging.Formatter.converter = time.gmtime
+            
         try:
             if fh :
                 open(fh,'w').close()
