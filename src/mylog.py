@@ -23,25 +23,28 @@ class mylog(logging.getLoggerClass()):
         """
         Constructor for logging module
         string:label     set the name of the logging provider
-        string:fh        pathname of file to log to, default is no logging to a file
+        string:fh        pathname of file to log to, default is no logging to a 
+                         file
         string:llevel    string of the loglevel
         string:fmt       custom format string, default will use built-in
-        bool:gmt         set to True to log in the machines vision of GMT time and reflect it in the logs
+        bool:gmt         set to True to log in the machines vision of GMT time 
+                         and reflect it in the logs
         bool:cnsl        set to True if you want to log to console
 
         This returns a singleton
-        ************************* doctest **********************************
-        >>> t = mylog("test logger", cnsl=True, sh=sys.stdout)
+        ************************* doctest *************************************
+        # when invoking mylog() set sh=sys.stdout this is needed for doctest
+        >>> t = mylog("test logger", cnsl=True, sh=sys.stdout) 
         >>> print t # doctest: +ELLIPSIS
         <...mylog object at 0x...>
-        >>> t.warn("hello world!") # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        >>> t.warn("hello world!") #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
         2... WARNING    :test logger [...] hello world!
-        >>> t.error("should see this") # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        >>> t.error("should see this")#doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
         2... ERROR    :test logger [...] should see this
         >>> t.info("should not see this")
         >>> t.debug("0x1337")  # or this
         >>> 
-        *******************************************************************
+        ***********************************************************************
         """
         logging.Logger.__init__(self,label)
 
