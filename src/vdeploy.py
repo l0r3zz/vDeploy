@@ -54,14 +54,15 @@ def main():
 
         args = parser.parse_args()
 
-        log = mylog.mylog('Deploy(main)',llevel=args.log,fh=args.logfile,cnsl=args.console)
+        log = mylog.mylog('vDeploy(main)',llevel=args.log,fh=args.logfile,cnsl=args.console)
 
-        log.info('Program Start')
-
+        log.info('program start : %s' % args)
+        log.info('program terminated.. good bye')
     except KeyboardInterrupt:
         print ""
         return(1)
 
 if __name__ == "__main__":
     status = main()
+
     sys.exit(status)

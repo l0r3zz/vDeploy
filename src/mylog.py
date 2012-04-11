@@ -49,7 +49,7 @@ class mylog(logging.getLoggerClass()):
 
         try:
             if fh :
-                open(fh,'w').close()
+
                 self._fh = logging.FileHandler(fh)
                 self._fh.setFormatter(formatter)
                 self._fh.setLevel(n_level)
