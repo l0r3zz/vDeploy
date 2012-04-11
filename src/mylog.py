@@ -20,7 +20,7 @@ import logging
 
 class mylog(logging.getLoggerClass()):
     def __init__(self, label, fh=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=None):
-        """
+        r"""
         Constructor for logging module
         string:label     set the name of the logging provider
         string:fh        pathname of file to log to, default is no logging to a 
@@ -30,8 +30,9 @@ class mylog(logging.getLoggerClass()):
         bool:gmt         set to True to log in the machines vision of GMT time 
                          and reflect it in the logs
         bool:cnsl        set to True if you want to log to console
+        int:sh           file descriptor for log stream defaults to sys.stderr
 
-        This returns a singleton
+        returns:         a singleton object
         ************************* doctest *************************************
         # when invoking mylog() set sh=sys.stdout this is needed for doctest
         >>> t = mylog("test logger", cnsl=True, sh=sys.stdout) 
@@ -46,6 +47,8 @@ class mylog(logging.getLoggerClass()):
         >>> 
         ***********************************************************************
         """
+
+        
         logging.Logger.__init__(self,label)
 
         n_level = getattr(logging, llevel.upper(), None)
