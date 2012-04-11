@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 #   Copyright (c) 2012 Geoffrey White
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +13,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-#! /usr/bin/env python
 
 """
 Module Doc String
 """
-
+import sys
 import argparse
+import mylog
 
 LPORT_DEFAULT = 33777
 
@@ -26,9 +27,10 @@ def main():
 
     try: # catch ^C and exit
 
-        parser = argparse.ArgumentParser(description="Deploy VMs into your cloud infrastructure")
 
-        parser.add_argument("-u", "--user", default="root",
+        parser = argparse.ArgumentParser(description= 'Deploy VMs into your cloud infrastructure')
+
+        parser.add_argument('-u', '--user', default='root',
                           help=("Default user to provide for login"
                                  " to hypervisors default = %(default)s"))
         parser.add_argument("-p", "--password", default="password",
@@ -39,10 +41,22 @@ def main():
                             help=("Start %(prog)s as a daemon"))
 
         parser.add_argument("-P",'--lport',type=int,default=LPORT_DEFAULT,
-                           help="listen on port default: %(default)s")
+                           help="listen on port [default:%(default)s]")
+
+        parser.add_argument('-l','--log',default='WARN',
+                           help="set the log level [default:%(default)s]")
+
+        parser.add_argument('--logfile',default='./vdeploy.log',
+                           help="set the logfile path to: %(default)s")
+
+        parser.add_argument("--console",action="store_true",
+                            help=("Log to the console "))
 
         args = parser.parse_args()
 
+        log = mylog.mylog('Deploy(main)',llevel=args.log,fh=args.logfile,cnsl=args.console)
+
+        log.info('Program Start')
 
     except KeyboardInterrupt:
         print ""
