@@ -30,12 +30,18 @@ class mylog(logging.getLoggerClass()):
         bool:cnsl        set to True if you want to log to console
 
         This returns a singleton
-
+        ************************* doctest **********************************
         >>> t = mylog("test logger", cnsl=True, sh=sys.stdout)
         >>> print t # doctest: +ELLIPSIS
         <...mylog object at 0x...>
         >>> t.warn("hello world!") # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
         2... WARNING    :test logger [...] hello world!
+        >>> t.error("should see this") # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        2... ERROR    :test logger [...] should see this
+        >>> t.info("should not see this")
+        >>> t.debug("0x1337")  # or this
+        >>> 
+        *******************************************************************
         """
         logging.Logger.__init__(self,label)
 
