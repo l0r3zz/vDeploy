@@ -8,6 +8,8 @@
 # internal functions & classes
 
 def main():
+    #    import doctest
+    #    doctest.testmod()
     pass
 
 

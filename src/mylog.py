@@ -19,7 +19,7 @@ import time
 import logging
 
 class mylog(logging.getLoggerClass()):
-    def __init__(self, label, fh=None, llevel='WARN', fmt=None, gmt=False, cnsl=None):
+    def __init__(self, label, fh=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=None):
         """
         Constructor for logging module
         string:label     set the name of the logging provider
@@ -30,6 +30,12 @@ class mylog(logging.getLoggerClass()):
         bool:cnsl        set to True if you want to log to console
 
         This returns a singleton
+
+        >>> t = mylog("test logger", cnsl=True, sh=sys.stdout)
+        >>> print t # doctest: +ELLIPSIS
+        <...mylog object at 0x...>
+        >>> t.warn("hello world!") # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+        2... WARNING    :test logger [...] hello world!
         """
         logging.Logger.__init__(self,label)
 
@@ -59,7 +65,10 @@ class mylog(logging.getLoggerClass()):
             print("Can't open location %s" % fh)
 
         if cnsl :
-            self._ch = logging.StreamHandler()
+            if sh :
+                self._ch = logging.StreamHandler(sh)
+            else:
+                self._ch = logging.StreamHandler()
             self._ch.setLevel(n_level)
             self._ch.setFormatter(formatter)
             self.addHandler(self._ch)
@@ -67,12 +76,14 @@ class mylog(logging.getLoggerClass()):
 
 
 def main():
-    logger = mylog("Test Logger",llevel='DEBUG', cnsl=True)
+    logger = mylog("Test Logger",llevel='DEBUG', cnsl=True,sh=sys.stdout)
     logger.info("Hello World")
     logger.warn("Danger Will Robinson")
     logger.error("Time to Die")
     logger.debug("0x1337")
-    return 0
+#    import doctest
+#    doctest.testmod()
+#    return 0
 
 if __name__ == "__main__" :
     main()
