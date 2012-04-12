@@ -18,51 +18,29 @@
 Module Doc String
 """
 import sys
-import argparse
+import getopts
 import mylog
 
-LPORT_DEFAULT = 33777
+
 
 def main():
 
     try: # catch ^C and exit
-
-
-        parser = argparse.ArgumentParser(description= 'Deploy VMs into your cloud infrastructure')
-
-        parser.add_argument('-u', '--user', default='root',
-                          help=("Default user to provide for login"
-                                 " to hypervisors default = %(default)s"))
-        parser.add_argument("-p", "--password", default="password",
-                          help=("Default password to provide for login"
-                                 " to hypervisors default = %(default)s"))
-
-        parser.add_argument("-D","--daemonize",action="store_true",
-                            help=("Start %(prog)s as a daemon"))
-
-        parser.add_argument("-P",'--lport',type=int,default=LPORT_DEFAULT,
-                           help="listen on port [default:%(default)s]")
-
-        parser.add_argument('-l','--log',default='WARN',
-                           help="set the log level [default:%(default)s]")
-
-        parser.add_argument('--logfile',default='./vdeploy.log',
-                           help="set the logfile path to: %(default)s")
-
-        parser.add_argument("--console",action="store_true",
-                            help=("Log to the console "))
-
-        args = parser.parse_args()
-
-        log = mylog.mylog('vDeploy(main)',llevel=args.log,fh=args.logfile,cnsl=args.console)
+        # Command line Options
+        args = getopts.vdeploy_options()
+        
+        # Start Logging 
+        log = mylog.mylog('vDeploy(main)',llevel=args.log,
+                          fh=args.logfile,cnsl=args.console)
 
         log.info('program start : %s' % args)
+        
         log.info('program terminated.. good bye')
+        
     except KeyboardInterrupt:
         print ""
         return(1)
 
 if __name__ == "__main__":
     status = main()
-
     sys.exit(status)
