@@ -17,16 +17,25 @@
 """
 Module Doc String
 """
+# imports
+
 import sys
 import getopts
 import mylog
+import prov
+import vdeploy_server
 
-
+# constants
+# exception classes
+# interface functions
+# classes
+# internal functions & classes
 
 def main():
 
     try: # catch ^C and exit
-        # Command line Options
+        
+        # Read the Command line Options
         args = getopts.vdeploy_options()
         
         # Start Logging 
@@ -35,11 +44,22 @@ def main():
 
         log.info('program start : %s' % args)
         
-        log.info('program terminated.. good bye')
+        if args.daemonize :
+            try:
+                daemon_handle = vdeploy_server.Server(args)
+            except:
+                log.warn("Could not start as a service, exiting")
+                terminate(1)
+        
         
     except KeyboardInterrupt:
         print ""
         return(1)
+
+def terminate(exitcode):
+    log.error('program terminated.. good bye')
+    sys.exit(exitcode)
+
 
 if __name__ == "__main__":
     status = main()

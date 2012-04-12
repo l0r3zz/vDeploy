@@ -1,5 +1,12 @@
 #! /usr/bin/env python
-"""module docstring"""
+"""
+This module handles the gathering and validation of program arguments.
+By validation we mean:
+access to file system paths are verified.
+ability to bind to ports are verified (if daemon mode is enabled)
+argparse is used to get the command line arguments
+
+"""
 
 # imports
 import argparse
@@ -26,11 +33,24 @@ def vdeploy_options():
         parser.add_argument('-l','--log',default='WARN',
                            help="set the log level [default:%(default)s]")
 
-        parser.add_argument('--logfile',default='./vdeploy.log',
+        parser.add_argument('--logfile',default=None,
                            help="set the logfile path to: %(default)s")
 
         parser.add_argument("--console",action="store_true",
                             help=("Log to the console "))
+        
+        parser.add_argument('--ddf',default=None,
+                           help="deployment description file")
+        parser.add_argument('--rdf',default=None,
+                           help="re-deployment description file")
+        parser.add_argument('--hdf',default=None,
+                           help="hypervisor description file")
+        parser.add_argument('--ndf',default=None,
+                           help="network description file")
+        parser.add_argument('--vdf',default=None,
+                           help="VM description file")
+        parser.add_argument('--udf',default=None,
+                           help="universal description file")
 
         return parser.parse_args()
 # classes
