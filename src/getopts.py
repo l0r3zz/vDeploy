@@ -33,7 +33,7 @@ def vdeploy_options():
         parser.add_argument('-l','--log',default='WARN',
                            help="set the log level [default:%(default)s]")
 
-        parser.add_argument('--logfile',default=None,
+        parser.add_argument('--logfile',default='./vdeploy.log',
                            help="set the logfile path to: %(default)s")
 
         parser.add_argument("--console",action="store_true",

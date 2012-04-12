@@ -3,6 +3,7 @@
 
 # imports
 import mylog
+import logging
 # constants
 # exception classes
 # interface functions
@@ -11,8 +12,8 @@ import mylog
 
 class Server():
     def __init__(self,args):
-        log = mylog.mylog('DaemonService')
-        log.info("Starting daemon service")
+        log = logging.getLogger('DaemonService')
+        log.warn("Starting daemon service")
         
 
 

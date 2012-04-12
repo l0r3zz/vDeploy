@@ -30,6 +30,7 @@ import vdeploy_server
 # interface functions
 # classes
 # internal functions & classes
+log = None
 
 def main():
 
@@ -39,6 +40,7 @@ def main():
         args = getopts.vdeploy_options()
         
         # Start Logging 
+        global log
         log = mylog.mylog('vDeploy(main)',llevel=args.log,
                           fh=args.logfile,cnsl=args.console)
 
@@ -50,7 +52,8 @@ def main():
             except:
                 log.warn("Could not start as a service, exiting")
                 terminate(1)
-        
+        log.info("program exiting normally")
+        return(0)
         
     except KeyboardInterrupt:
         print ""
