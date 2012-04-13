@@ -4,19 +4,23 @@
 # imports
 import mylog
 import logging
+
 # constants
 # exception classes
-# interface functions
-# classes
-# internal functions & classes
+class DaemonError(Exception): pass
 
+
+# interface functions
+
+
+# classes
 class Server():
     def __init__(self,args):
-        log = mylog.logg( 'vDeploy.%s' % __name__)
-        log.warn("Starting daemon service")
+        log = logging.getLogger('vDeploy.%s' % __name__)
+        log.info("Starting daemon service")
 
 
-
+# internal functions & classes
 def main():
     #    import doctest
     #    doctest.testmod()

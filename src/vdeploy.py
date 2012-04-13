@@ -32,33 +32,41 @@ import vdeploy_server
 # internal functions & classes
 
 def main():
+    # Internal functions to main()
+    def terminate(exitcode):
+        log.error('program terminated prematurely... good bye')
+        sys.exit(exitcode)
+    # Main program code starts here
     try:
-
         # Read the Command line Options
         args = getopts.vdeploy_options()
-
         # Start Logging 
         log = mylog.logg('vDeploy',llevel=args.log,
                           lfile=args.logfile,cnsl=args.console)
 
         log.info('program start : %s' % args)
 
+        # See if we are going to run as a service
         if args.daemonize :
             try:
                 daemon_handle = vdeploy_server.Server(args)
-            except:
+
+            except vdeploy_server.DaemonError:
                 log.warn("Could not start as a service, exiting")
                 terminate(1)
+
+
+
+
         log.info("program exiting normally")
         return(0)
 
     except KeyboardInterrupt:
         print ""
-        return(1)
+        terminate(1)
 
-def terminate(exitcode):
-    log.error('program terminated.. good bye')
-    sys.exit(exitcode)
+
+
 
 
 if __name__ == "__main__":
