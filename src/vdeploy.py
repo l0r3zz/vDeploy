@@ -32,18 +32,17 @@ import vdeploy_server
 # internal functions & classes
 
 def main():
+    try:
 
-    try: # catch ^C and exit
-        
         # Read the Command line Options
         args = getopts.vdeploy_options()
-        
+
         # Start Logging 
         log = mylog.logg('vDeploy(main)',llevel=args.log,
                           fh=args.logfile,cnsl=args.console)
 
         log.info('program start : %s' % args)
-        
+
         if args.daemonize :
             try:
                 daemon_handle = vdeploy_server.Server(args)
@@ -52,7 +51,7 @@ def main():
                 terminate(1)
         log.info("program exiting normally")
         return(0)
-        
+
     except KeyboardInterrupt:
         print ""
         return(1)

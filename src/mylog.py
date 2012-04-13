@@ -18,11 +18,11 @@ import sys
 import time
 import logging
 
-def logg(label, fh=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=None):
+def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=None):
     r"""
     Constructor for logging module
     string:label     set the name of the logging provider
-    string:fh        pathname of file to log to, default is no logging to a 
+    string:lfile     pathname of file to log to, default is no logging to a 
                      file
     string:llevel    string of the loglevel
     string:fmt       custom format string, default will use built-in
@@ -47,12 +47,14 @@ def logg(label, fh=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=None)
     ***********************************************************************
     """
 
-    
+
     log = logging.getLogger(label)
+
 
     n_level = getattr(logging, llevel.upper(), None)
     if not isinstance(n_level, int):
         raise ValueError('Invalid log level: %s' % llevel)
+    log.setLevel(n_level)
 
     if fmt :
         formatter = fmt
@@ -66,25 +68,22 @@ def logg(label, fh=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=None)
         logging.Formatter.converter = time.gmtime
 
     try:
-        if fh :
+        if lfile :
 
-           _fh = logging.FileHandler(fh)
-           _fh.setFormatter(formatter)
-           _fh.setLevel(n_level)
+           fh = logging.FileHandler(lfile)
+           fh.setFormatter(formatter)
            log.addHandler(_fh)
     except IOError :
         print("Can't open location %s" % fh)
 
     if cnsl :
         if sh :
-           _ch = logging.StreamHandler(sh)
+           ch = logging.StreamHandler(sh)
         else:
-           _ch = logging.StreamHandler()
-           
-        _ch.setLevel(n_level)
-        _ch.setFormatter(formatter)
-        log.addHandler(_ch)
-           
+           ch = logging.StreamHandler()
+        ch.setFormatter(formatter)
+        log.addHandler(ch)
+
     return log
 
 
