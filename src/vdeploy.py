@@ -30,7 +30,6 @@ import vdeploy_server
 # interface functions
 # classes
 # internal functions & classes
-log = None
 
 def main():
 
@@ -40,8 +39,7 @@ def main():
         args = getopts.vdeploy_options()
         
         # Start Logging 
-        global log
-        log = mylog.mylog('vDeploy(main)',llevel=args.log,
+        log = mylog.logg('vDeploy(main)',llevel=args.log,
                           fh=args.logfile,cnsl=args.console)
 
         log.info('program start : %s' % args)

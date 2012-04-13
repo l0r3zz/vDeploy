@@ -12,7 +12,7 @@ import logging
 
 class Server():
     def __init__(self,args):
-        log = logging.getLogger('DaemonService')
+        log = mylog.logg('DaemonService')
         log.warn("Starting daemon service")
         
 
