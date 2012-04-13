@@ -38,8 +38,8 @@ def main():
         args = getopts.vdeploy_options()
 
         # Start Logging 
-        log = mylog.logg('vDeploy(main)',llevel=args.log,
-                          fh=args.logfile,cnsl=args.console)
+        log = mylog.logg('vDeploy',llevel=args.log,
+                          lfile=args.logfile,cnsl=args.console)
 
         log.info('program start : %s' % args)
 

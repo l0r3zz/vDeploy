@@ -12,9 +12,9 @@ import logging
 
 class Server():
     def __init__(self,args):
-        log = mylog.logg('DaemonService')
+        log = mylog.logg( 'vDeploy.%s' % __name__)
         log.warn("Starting daemon service")
-        
+
 
 
 def main():

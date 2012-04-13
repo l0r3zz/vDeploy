@@ -48,6 +48,7 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
     """
 
 
+
     log = logging.getLogger(label)
 
 
@@ -60,10 +61,10 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
         formatter = fmt
     elif gmt :
         formatter = logging.Formatter(
-            '%(asctime)s:Z %(levelname)s:%(name)s [%(module)s:%(lineno)d] %(message)s')
+            '%(asctime)s:Z %(levelname)s: %(name)s:%(lineno)d] %(message)s')
     else :
         formatter = logging.Formatter(
-            '%(asctime)s %(levelname)s\t:%(name)s [%(module)s:%(lineno)d] %(message)s')     
+            '%(asctime)s %(levelname)s: %(name)s:%(lineno)d] %(message)s')     
     if gmt:
         logging.Formatter.converter = time.gmtime
 
@@ -72,7 +73,7 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
 
            fh = logging.FileHandler(lfile)
            fh.setFormatter(formatter)
-           log.addHandler(_fh)
+           log.addHandler(fh)
     except IOError :
         print("Can't open location %s" % fh)
 
@@ -89,10 +90,10 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
 
 
 def main():
-    logger = logg("Test Logger",llevel='DEBUG', cnsl=True,sh=sys.stdout)
+    logger = logg("Test Logger",llevel='INFO', cnsl=True,sh=sys.stdout)
     logger.info("Hello World")
     logger.warn("Danger Will Robinson")
-    logger.error("Time to Die")
+    logger.critical("Time to Die")
     logger.debug("0x1337")
 #    import doctest
 #    doctest.testmod()
