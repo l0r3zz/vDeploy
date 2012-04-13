@@ -61,7 +61,11 @@ def main():
         log.info("program exiting normally")
         return(0)
 
+    except getopts.ArgparseError, e:
+        print ("Argument ERROR: %s" % e)
+        sys.exit(1)  
     except KeyboardInterrupt:
+        log.error("^C pressed")
         print ""
         terminate(1)
 

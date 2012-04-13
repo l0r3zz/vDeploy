@@ -47,16 +47,12 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
     ***********************************************************************
     """
 
-
-
     log = logging.getLogger(label)
-
 
     n_level = getattr(logging, llevel.upper(), None)
     if not isinstance(n_level, int):
         raise ValueError('Invalid log level: %s' % llevel)
     log.setLevel(n_level)
-
     if fmt :
         formatter = fmt
     elif gmt :
@@ -70,13 +66,11 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
 
     try:
         if lfile :
-
            fh = logging.FileHandler(lfile)
            fh.setFormatter(formatter)
            log.addHandler(fh)
     except IOError :
         print("Can't open location %s" % fh)
-
     if cnsl :
         if sh :
            ch = logging.StreamHandler(sh)
@@ -84,7 +78,6 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
            ch = logging.StreamHandler()
         ch.setFormatter(formatter)
         log.addHandler(ch)
-
     return log
 
 
