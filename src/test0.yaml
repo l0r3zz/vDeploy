@@ -1,0 +1,23 @@
+# Test of Yaml code
+Hypervisor: &MyDef
+    Name: MyDef
+    Description: This is a general Hypervisor definition
+    Type: ESX
+    Version: 5.1
+    CpuVendor: Intel
+    MemSize: 128
+    NicNum: 4
+    NicList :
+        - Nic 1 Intel
+        - Nic 2 Intel
+        - Nic 3 Broadcom
+        - Nic 4 Broadcom
+    RunList :
+        -
+            action: start
+            using: resource
+        -
+            action: monitor
+            using: resource
+HypervisorA: *MyDef
+HypervisorB: *MyDef
