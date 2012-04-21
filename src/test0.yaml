@@ -27,6 +27,18 @@
             -
                 action: monitor
                 using: resource
-        
-    HypervisorA: *HVDef
-    HypervisorB: *HVDef
+
+# Examples of using the alias definition then using the merge function to alter
+# the attributes        
+-   HypervisorA:
+        << : *HVDef
+        MemSize: 2048
+        MgmtIP: 192.168.1.1
+-   HypervisorB:
+        << : *HVDef
+        MemSize: 2048
+        MgmtIP: 192.168.1.2
+-   HypervisorC:
+        << : *HVDef
+        MemSize: 2048
+        MgmtIP: 192.168.1.3
