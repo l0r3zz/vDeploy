@@ -41,7 +41,7 @@ def vdeploy_options():
 
         parser.add_argument("--console",action="store_true",
                             help=("Log to the console "))
-        
+
         parser.add_argument('--ddf',default=None,
                            help="deployment description file")
         parser.add_argument('--rdf',default=None,
@@ -54,19 +54,19 @@ def vdeploy_options():
                            help="VM description file")
         parser.add_argument('--udf',default=None,
                            help="universal description file")
-        
+
         args = parser.parse_args()
         # Validate as many of the arguments as possible
         if  args.lport < 0 or args.lport > 65536:
             raise ArgparseError("Listening port out of range")
         if args.log.upper() not in LOG_LEVELS:
             raise ArgparseError("Unspecified Log Level")
-        
+
         file_check = True
         if args.ddf :
             if not os.path.exists(args.ddf):
                 file_check = False
-                print("%s : ddf file, no access" % args.ddf)        
+                print("%s : ddf file, no access" % args.ddf)
         if args.rdf :
             if not os.path.exists(args.rdf):
                 file_check = False
@@ -82,14 +82,14 @@ def vdeploy_options():
         if args.vdf :
             if not os.path.exists(args.vdf):
                 file_check = False
-                print("%s : vdf file, no access" % args.vdf)           
+                print("%s : vdf file, no access" % args.vdf)
         if args.udf :
             if not os.path.exists(args.udf):
                 file_check = False
                 print("%s : udf file, no access" % args.udf)
         if not file_check :
             raise ArgparseError("description files are specified but missing")
-          
+
         return args
 # classes
 # internal functions & classes
