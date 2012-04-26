@@ -1,0 +1,37 @@
+# This is the VM Definition File
+-
+    _Template_VMDef: &VMDef             # Define a template that can be called later
+        Name: None                      # Could be the FQDN
+        MgmtIP: 0.0.0.0                 # IP address of the management interface/console
+        MgmtMAC: 00:00:00:00:00:00      # MAC address of the management interface
+        MgmtUser: root                  # Username of privledge user
+        MgmtPass: password              # Password of privledge user
+        MemtToken: None                 # Encryption token for passwordless authentication
+        Description: None               # Any descriptive text can go here
+        OSType: None                    # Hypervisor type ESX|XENSERVER|HYPER-V|KVM|etc.
+        OSVersion: None                 # Version of Hypervisor
+        CpuCores: 1                     # Number of Cores per Socket
+        CpuSockets: 1                   # Number of Sockets
+        MemSize: 1024                   # memory size in Megabytes
+        NicNum: 1                       # Number of Physical Nics on the hosts
+        VMXtmplate:                     # Contains the vendor specific VM descriptor file(s)
+            esx: None
+            xen: None
+            hyperv: None
+            kvm: None
+        VDSKtmplate:                    # Object ref to the vendor specific system disk image
+            esx: None
+            xen: None
+            hyperv: None
+            kvm: None
+        NicList :                       # TBD Data on the virtual NICS for this VM
+            - Add
+            - Nic Definitions
+            - Here
+        RunList :                       # TBD Actions to be performed to stand-up/take-down this VM
+            -
+                action: start
+                using: resource
+            -
+                action: monitor
+                using: resource
