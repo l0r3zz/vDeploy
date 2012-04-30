@@ -2,7 +2,7 @@
 """
 This module reads the data from the definition files provided:
 <file>.ddf          Deployment Definition File
-                    A top level JSON specification of which VMs
+                    A top level YAML specification of which VMs
                     should be applied to which Hypervisors and
                     wired to specific Virtual Networks, this
                     file relies on objects defined in the 
@@ -16,38 +16,56 @@ This module reads the data from the definition files provided:
                     are validated against the data base that has 
                     been pre-loaded with these files.
 <file>.hdf          Hypervisor Definition File
-                    A JSON specification of the the hypervisors
+                    A YAML specification of the the hypervisors
                     available for deployment. Information included
                     are things, like Hypervisor (vendor) type,
                     control IP addresses, NFS mount points
                     (for virtual disk transfers), etc
 <file>.vdf          VM Definition File
-                    A JSON specification, describing a VM template,
+                    A YAML specification, describing a VM template,
                     What Hypervisors it can be deployed on,
                     location of disk images, for each hypervisor,
                     provisioning limits (memsize, core maximums and
                     minimums, nic maximums and minimums, os type,
                     descriptions, etc.
-<file>.ndf          A JSON specification, describing the available
+<file>.ndf          A YAML specification, describing the available
                     logical network configurations available for
                     the deployment, this will include vswitches
                     on hypervisors, distributed vSwitches that span
                     hypervisors, and SDN logical networks. This 
                     definition might be mutually dependent on the 
                     hdf file.
-<file>.udf          A JSON specification that combines the definitions of all of
+<file>.udf          A YAML specification that combines the definitions of all of
                     the previous specifications (ddf, hdf, ndf,vdf). This can be
                     used for deployments that will always per performed to
                     a fixed infrastructure. As a testing or debugging tool,
                     or as a "job" that can be submitted to a vDeploy daemon.
                     
+It also reads in YAML template files that define the core data structures that the
+above files use. 
+hvdef.yaml          A YAML description of the basic structure used in the .hdf file
+vmdef.yaml          A YAML description of the basic structure used to define a VM
+netdef.yaml         A YAML description for virtual networks that attach the VMs
+                    
 """
 
 # imports
+import os
+import sys
 import mylog
 import logging
+import yaml
 
 # constants
+# search through this directory list to find the configuration files
+CONFIG_DIR_DEFAULTS= ['/usr/local/share/vdeploy/','./.vdeploy/config/']
+
+# names of the structure definition files, these are part of the program and
+# only change from release to release 
+HVDEF_TEMPLATE= 'hvdef.yaml'
+VMDEF_TEMPLATE= 'vmdef.yaml'
+NETDEF_TEMPLATE= 'netdef.yaml'
+
 # exception classes
 class DDFLoadError(Exception): pass
 
@@ -56,8 +74,39 @@ class DDFLoadError(Exception): pass
 class DDFContext:
     def __init__(self,args):
         log = logging.getLogger('vDeploy.%s' % __name__)
-        log.info("Starting Starting DDF file processing")
-        pass
+        log.info("Starting DDF file processing")
+
+        # Scan for presence of config directory
+        config_dir = './'
+        for dpath in CONFIG_DIR_DEFAULTS:
+            if os.path.exists(dpath):
+                config_dir = dpath
+                break
+
+        # Attempt to load all of the data structure temple definitions
+        try:
+            hvpath = config_dir+HVDEF_TEMPLATE
+            if os.path.exists(hvpath):
+                self.hvtemplate =  yaml.load_all(file(hvpath))
+            else:
+                raise DDFLoadError(hvpath)
+            
+            vmpath = config_dir+VMDEF_TEMPLATE
+            if os.path.exists(vmpath):
+                self.vmtemplate =  yaml.load_all(file(vmpath))
+            else:
+                raise DDFLoadError(vmpath)
+            
+            netpath = config_dir+NETDEF_TEMPLATE
+            if os.path.exists(netpath):
+                self.nettemplate =  yaml.load_all(file(netpath))
+            else:
+                raise DDFLoadError(netpath)
+
+        except yaml.scanner.ScannerError,err:
+            log.error("Error in YAML config file " % err)       
+
+        log.info("Ending DDF file processing")
 
 # internal functions & classes
 

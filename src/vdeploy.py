@@ -49,8 +49,9 @@ def main():
         # Load the Hypervisor, VM and Network Definition Files (YAML data structure templates)
         try:
             ddf_context = prov.DDFContext(args)
-        except prov.DDFLoadError:
-            log.error("Error encountered in ddf file processing")
+        except prov.DDFLoadError, err:
+            log.error("Descriptor configuration file not found: %s" % err)
+            print("Descriptor configuration file not found: %s" % err)
             terminate(1)
 
         # See if we are going to run as a service
@@ -60,6 +61,7 @@ def main():
 
             except vdeploy_server.DaemonError:
                 log.warn("Could not start as a service, exiting")
+                print ("Could not start as a service, exiting")
                 terminate(1)
         else:
             pass
