@@ -45,11 +45,20 @@ This module reads the data from the definition files provided:
 
 # imports
 import mylog
+import logging
 
 # constants
 # exception classes
+class DDFLoadError(Exception): pass
+
 # interface functions
 # classes
+class DDFContext:
+    def __init__(self,args):
+        log = logging.getLogger('vDeploy.%s' % __name__)
+        log.info("Starting Starting DDF file processing")
+        pass
+
 # internal functions & classes
 
 def main():

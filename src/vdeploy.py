@@ -38,24 +38,31 @@ def main():
         sys.exit(exitcode)
     # Main program code starts here
     try:
-        # Read the Command line Options
+        # Gather and verify command line arguments 
         args = getopts.vdeploy_options()
+        
         # Start Logging 
         log = mylog.logg('vDeploy',llevel=args.log,
                           lfile=args.logfile,cnsl=args.console)
-
         log.info('program start : %s' % args)
+        
+        # Load the Hypervisor, VM and Network Definition Files (YAML data structure templates)
+        try:
+            ddf_context = prov.DDFContext(args)
+        except prov.DDFLoadError:
+            log.error("Error encountered in ddf file processing")
+            terminate(1)
 
         # See if we are going to run as a service
         if args.daemonize :
             try:
-                daemon_handle = vdeploy_server.Server(args)
+                daemon_handle = vdeploy_server.Server(args,ddf_context)
 
             except vdeploy_server.DaemonError:
                 log.warn("Could not start as a service, exiting")
                 terminate(1)
-
-
+        else:
+            pass
 
 
         log.info("program exiting normally")
@@ -68,9 +75,6 @@ def main():
         log.error("^C pressed")
         print ""
         terminate(1)
-
-
-
 
 
 if __name__ == "__main__":
