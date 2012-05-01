@@ -55,6 +55,7 @@ import sys
 import mylog
 import logging
 import yaml
+import simplejson
 
 # constants
 # search through this directory list to find the configuration files
