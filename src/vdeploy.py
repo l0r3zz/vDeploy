@@ -50,8 +50,7 @@ def main():
         try:
             ddf_context = prov.DDFContext(args)
         except prov.DDFLoadError, err:
-            log.error("Descriptor configuration file not found: %s" % err)
-            print("Descriptor configuration file not found: %s" % err)
+            mylog.printlog(log,"Descriptor configuration file not found: %s" % err, 'ERROR')
             terminate(1)
 
         # See if we are going to run as a service
@@ -60,8 +59,7 @@ def main():
                 daemon_handle = vdeploy_server.Server(args,ddf_context)
 
             except vdeploy_server.DaemonError:
-                log.warn("Could not start as a service, exiting")
-                print ("Could not start as a service, exiting")
+                mylog.printlog(log,"Could not start as a service, exiting")
                 terminate(1)
         else:
             pass

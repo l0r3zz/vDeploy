@@ -88,19 +88,25 @@ class DDFContext:
         try:
             hvpath = config_dir+HVDEF_TEMPLATE
             if os.path.exists(hvpath):
-                self.hvtemplate =  yaml.load_all(file(hvpath))
+                self.hvtemplate =  yaml.load(file(hvpath))
+                if not self.hvtemplate:
+                    mylog.printlog(log,"%s is empty" % hvpath, 'INFO')
             else:
                 raise DDFLoadError(hvpath)
             
             vmpath = config_dir+VMDEF_TEMPLATE
             if os.path.exists(vmpath):
-                self.vmtemplate =  yaml.load_all(file(vmpath))
+                self.vmtemplate =  yaml.load(file(vmpath))
+                if not self.vmtemplate:
+                    mylog.printlog(log,"%s is empty" % vmpath, 'INFO')
             else:
                 raise DDFLoadError(vmpath)
             
             netpath = config_dir+NETDEF_TEMPLATE
             if os.path.exists(netpath):
-                self.nettemplate =  yaml.load_all(file(netpath))
+                self.nettemplate =  yaml.load(file(netpath))
+                if not self.nettemplate:
+                    mylog.printlog(log,"%s is empty" % netpath, 'INFO')
             else:
                 raise DDFLoadError(netpath)
 

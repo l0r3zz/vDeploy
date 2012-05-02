@@ -80,7 +80,18 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
         log.addHandler(ch)
     return log
 
-
+def printlog(logger, msg, level="WARN"):
+    print( '%s:%s' % (level.upper(), msg))
+    if level.upper() == 'INFO':
+        logger.info(msg)
+    elif level.upper() == 'WARN' or level.upper() == 'WARNING':
+        logger.warn(msg)
+    elif level.upper() == 'ERROR':
+        logger.error(msg)
+    elif level.upper() == 'CRITICAL':
+        logger.critical(msg)
+    elif level.upper() == 'DEBUG':
+        logger.debug(msg)
 
 def main():
     logger = logg("Test Logger",llevel='INFO', cnsl=True,sh=sys.stdout)
