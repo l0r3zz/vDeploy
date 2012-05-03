@@ -23,6 +23,7 @@ import sys
 import getopts
 import mylog
 import provisioning
+import deployment
 import vdeploy_server
 
 # constants
@@ -72,11 +73,11 @@ def main():
             # to the execution engine for deployment, Deploy returns immediately, you must
             # check status to determine whether the deployment has actually completed
             try:
-                deploy_context = provisioning.Deploy(ddf_context,args)
+                deploy_context = deployment.Deploy(ddf_context,args)
                 while deploy_context.status() == "executing":
                     continue
 
-            except provisioning.DeployExecError, err:
+            except deployment.DeployExecError, err:
                 mylog.printlog(log,"Deploy Failed: %s" % err, 'ERROR')
                 terminate(1)
 

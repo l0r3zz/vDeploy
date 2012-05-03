@@ -127,15 +127,7 @@ class DDFContext:
         self.log.info("Starting DDF file processing")
         pass
         self.log.info("Ending DDF file processing")
-
-class Deploy:
-    def __init__(self, ctx, args):
-        self.log = logging.getLogger('vDeploy.%s' % __name__)
-        self.log.info("Starting deployment Engine")
-        self.log.info("Ending deployment Engine")
-
-    def status(self):
-        return( "done")
+    
 # internal functions & classes
 
 def main():
