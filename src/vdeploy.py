@@ -22,7 +22,7 @@ Module Doc String
 import sys
 import getopts
 import mylog
-import prov
+import provisioning
 import vdeploy_server
 
 # constants
@@ -48,8 +48,8 @@ def main():
 
         # Load the Hypervisor, VM and Network Definition Files (YAML data structure templates)
         try:
-            ddf_context = prov.DDFContext(args)
-        except prov.DDFLoadError, err:
+            ddf_context = provisioning.DDFContext(args)
+        except provisioning.DDFLoadError, err:
             mylog.printlog(log,"Descriptor configuration file not found: %s" % err, 'ERROR')
             terminate(1)
 
@@ -65,18 +65,18 @@ def main():
             # files and create the data structures to hand off to the deployment engine
             try:
                 ddf_context.process_ddf_files(args)
-            except prov.DDFLoadError, err:
+            except provisioning.DDFLoadError, err:
                 mylog.printlog(log,"Error processing description file: %s" % err)
                 terminate(1)
             # Now that the context has the deployment structure instantiated, send it off
             # to the execution engine for deployment, Deploy returns immediately, you must
             # check status to determine whether the deployment has actually completed
             try:
-                deploy_context = prov.Deploy(ddf_context,args)
+                deploy_context = provisioning.Deploy(ddf_context,args)
                 while deploy_context.status() == "executing":
                     continue
 
-            except prov.DeployExecError, err:
+            except provisioning.DeployExecError, err:
                 mylog.printlog(log,"Deploy Failed: %s" % err, 'ERROR')
                 terminate(1)
 

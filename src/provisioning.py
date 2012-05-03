@@ -114,7 +114,7 @@ class DDFContext:
         except yaml.scanner.ScannerError,err:
             self.log.error("Error in YAML config file " % err)       
 
-        self.log.info("Ending DDF file processing")
+        self.log.info("Ending config file processing")
 
     def process_ddf_files(self,args):
         """
