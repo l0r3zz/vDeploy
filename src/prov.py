@@ -40,13 +40,13 @@ This module reads the data from the definition files provided:
                     used for deployments that will always per performed to
                     a fixed infrastructure. As a testing or debugging tool,
                     or as a "job" that can be submitted to a vDeploy daemon.
-                    
+
 It also reads in YAML template files that define the core data structures that the
 above files use. 
 hvdef.yaml          A YAML description of the basic structure used in the .hdf file
 vmdef.yaml          A YAML description of the basic structure used to define a VM
 netdef.yaml         A YAML description for virtual networks that attach the VMs
-                    
+
 """
 
 # imports
@@ -69,13 +69,14 @@ NETDEF_TEMPLATE= 'netdef.yaml'
 
 # exception classes
 class DDFLoadError(Exception): pass
+class DeployExecError(Exception): pass
 
 # interface functions
 # classes
 class DDFContext:
     def __init__(self,args):
-        log = logging.getLogger('vDeploy.%s' % __name__)
-        log.info("Starting DDF file processing")
+        self.log = logging.getLogger('vDeploy.%s' % __name__)
+        self.log.info("Starting config file processing")
 
         # Scan for presence of config directory
         config_dir = './'
@@ -90,31 +91,51 @@ class DDFContext:
             if os.path.exists(hvpath):
                 self.hvtemplate =  yaml.load(file(hvpath))
                 if not self.hvtemplate:
-                    mylog.printlog(log,"%s is empty" % hvpath, 'INFO')
+                    mylog.printlog(self.log,"%s is empty" % hvpath, 'INFO')
             else:
                 raise DDFLoadError(hvpath)
-            
+
             vmpath = config_dir+VMDEF_TEMPLATE
             if os.path.exists(vmpath):
                 self.vmtemplate =  yaml.load(file(vmpath))
                 if not self.vmtemplate:
-                    mylog.printlog(log,"%s is empty" % vmpath, 'INFO')
+                    mylog.printlog(self.log,"%s is empty" % vmpath, 'INFO')
             else:
                 raise DDFLoadError(vmpath)
-            
+
             netpath = config_dir+NETDEF_TEMPLATE
             if os.path.exists(netpath):
                 self.nettemplate =  yaml.load(file(netpath))
                 if not self.nettemplate:
-                    mylog.printlog(log,"%s is empty" % netpath, 'INFO')
+                    mylog.printlog(self.log,"%s is empty" % netpath, 'INFO')
             else:
                 raise DDFLoadError(netpath)
 
         except yaml.scanner.ScannerError,err:
-            log.error("Error in YAML config file " % err)       
+            self.log.error("Error in YAML config file " % err)       
 
-        log.info("Ending DDF file processing")
+        self.log.info("Ending DDF file processing")
 
+    def process_ddf_files(self,args):
+        """
+        This method takes a DDF context object which has been loaded with the context
+        of what this current version is capable of, and create a deployment structure
+        consisting of the definitions of what is available merged with the VM definitions.
+        This context object can be passed off to the deployment engine for subsequent
+        execution.
+        """
+        self.log.info("Starting DDF file processing")
+        pass
+        self.log.info("Ending DDF file processing")
+
+class Deploy:
+    def __init__(self, ctx, args):
+        self.log = logging.getLogger('vDeploy.%s' % __name__)
+        self.log.info("Starting deployment Engine")
+        self.log.info("Ending deployment Engine")
+
+    def status(self):
+        return( "done")
 # internal functions & classes
 
 def main():

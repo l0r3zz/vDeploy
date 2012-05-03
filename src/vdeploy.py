@@ -40,12 +40,12 @@ def main():
     try:
         # Gather and verify command line arguments 
         args = getopts.vdeploy_options()
-        
+
         # Start Logging 
         log = mylog.logg('vDeploy',llevel=args.log,
                           lfile=args.logfile,cnsl=args.console)
         log.info('program start : %s' % args)
-        
+
         # Load the Hypervisor, VM and Network Definition Files (YAML data structure templates)
         try:
             ddf_context = prov.DDFContext(args)
@@ -57,13 +57,28 @@ def main():
         if args.daemonize :
             try:
                 daemon_handle = vdeploy_server.Server(args,ddf_context)
-
             except vdeploy_server.DaemonError:
                 mylog.printlog(log,"Could not start as a service, exiting")
                 terminate(1)
         else:
-            pass
+            # We're running on the command line, process the deployment definition 
+            # files and create the data structures to hand off to the deployment engine
+            try:
+                ddf_context.process_ddf_files(args)
+            except prov.DDFLoadError, err:
+                mylog.printlog(log,"Error processing description file: %s" % err)
+                terminate(1)
+            # Now that the context has the deployment structure instantiated, send it off
+            # to the execution engine for deployment, Deploy returns immediately, you must
+            # check status to determine whether the deployment has actually completed
+            try:
+                deploy_context = prov.Deploy(ddf_context,args)
+                while deploy_context.status() == "executing":
+                    continue
 
+            except prov.DeployExecError, err:
+                mylog.printlog(log,"Deploy Failed: %s" % err, 'ERROR')
+                terminate(1)
 
         log.info("program exiting normally")
         return(0)
