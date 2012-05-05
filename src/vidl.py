@@ -9,7 +9,7 @@ import yaml
 def vidl(*args, **kwargs):
     loadstring = ''
     for file in args:
-        loadstring.append(open(file).read())
+        loadstring += open(file).read()
     return yaml.load(loadstring)
 # classes
 # internal functions & classes

@@ -88,29 +88,29 @@ class DDFContext:
 
         # Attempt to load all of the data structure temple definitions
         try:
-            hvpath = config_dir+HVDEF_TEMPLATE
-            if os.path.exists(hvpath):
-                self.hvtemplate =  yaml.load(file(hvpath))
+            self.hvpath = config_dir+HVDEF_TEMPLATE
+            if os.path.exists(self.hvpath):
+                self.hvtemplate =  yaml.load(file(self.hvpath))
                 if not self.hvtemplate:
-                    mylog.printlog(self.log,"%s is empty" % hvpath, 'INFO')
+                    mylog.printlog(self.log,"%s is empty" % self.hvpath, 'INFO')
             else:
-                raise DDFLoadError(hvpath)
+                raise DDFLoadError(self.hvpath)
 
-            vmpath = config_dir+VMDEF_TEMPLATE
-            if os.path.exists(vmpath):
-                self.vmtemplate =  yaml.load(file(vmpath))
+            self.vmpath = config_dir+VMDEF_TEMPLATE
+            if os.path.exists(self.vmpath):
+                self.vmtemplate =  yaml.load(file(self.vmpath))
                 if not self.vmtemplate:
-                    mylog.printlog(self.log,"%s is empty" % vmpath, 'INFO')
+                    mylog.printlog(self.log,"%s is empty" % self.vmpath, 'INFO')
             else:
-                raise DDFLoadError(vmpath)
+                raise DDFLoadError(self.vmpath)
 
-            netpath = config_dir+NETDEF_TEMPLATE
-            if os.path.exists(netpath):
-                self.nettemplate =  yaml.load(file(netpath))
+            self.netpath = config_dir+NETDEF_TEMPLATE
+            if os.path.exists(self.netpath):
+                self.nettemplate =  yaml.load(file(self.netpath))
                 if not self.nettemplate:
-                    mylog.printlog(self.log,"%s is empty" % netpath, 'INFO')
+                    mylog.printlog(self.log,"%s is empty" % self.netpath, 'INFO')
             else:
-                raise DDFLoadError(netpath)
+                raise DDFLoadError(self.netpath)
 
         except yaml.scanner.ScannerError,err:
             self.log.error("Error in YAML config file " % err)       
@@ -130,9 +130,9 @@ class DDFContext:
 
         self.udf = (vidl(args.udf) if args.udf else None)
         self.rdf = (vidl(args.rdf) if args.rdf else None)
-        self.vdf = (vidl(self.vmtemplate,args.vdf) if args.vdf else None)
-        self.hdf = (vidl(self.hvtemplate,args.hdf) if args.hdf else None)
-        self.ndf = (vidl(self.nettemplate,args.ndf) if args.ndf else None)
+        self.vdf = (vidl(self.vmpath,args.vdf) if args.vdf else None)
+        self.hdf = (vidl(self.hvpath,args.hdf) if args.hdf else None)
+        self.ndf = (vidl(self.netpath,args.ndf) if args.ndf else None)
 
 
         self.log.info("Ending DDF file processing")
