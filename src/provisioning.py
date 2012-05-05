@@ -56,6 +56,7 @@ import mylog
 import logging
 import yaml
 import simplejson
+from vidl import vidl
 
 # constants
 # search through this directory list to find the configuration files
@@ -119,15 +120,23 @@ class DDFContext:
     def process_ddf_files(self,args):
         """
         This method takes a DDF context object which has been loaded with the context
-        of what this current version is capable of, and create a deployment structure
+        of what this current version is capable of, and creates a deployment structure
         consisting of the definitions of what is available merged with the VM definitions.
         This context object can be passed off to the deployment engine for subsequent
         execution.
         """
         self.log.info("Starting DDF file processing")
-        pass
+
+
+        self.udf = (vidl(args.udf) if args.udf else None)
+        self.rdf = (vidl(args.rdf) if args.rdf else None)
+        self.vdf = (vidl(self.vmtemplate,args.vdf) if args.vdf else None)
+        self.hdf = (vidl(self.hvtemplate,args.hdf) if args.hdf else None)
+        self.ndf = (vidl(self.nettemplate,args.ndf) if args.ndf else None)
+
+
         self.log.info("Ending DDF file processing")
-    
+
 # internal functions & classes
 
 def main():

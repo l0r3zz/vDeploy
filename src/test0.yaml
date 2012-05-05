@@ -2,8 +2,8 @@
 # This is a prototype of VIDL (Virtual Infrastructure Descriptor Language)
 %TAG !! tag:durganetworks.com,2012:
 ---
--
-      _Template_HVDef: &HVDef                 # Define a template that can be called later
+
+-     _Template_HVDef: &HVDef                 # Define a template that can be called later
           Name: None                          # Could be the FQDN
           MgmtIP: 0.0.0.0                     # IP address of the management interface/console
           MgmtUser: root                      # Username of privledge user
