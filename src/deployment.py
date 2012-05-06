@@ -17,11 +17,11 @@ import hypervisor
 # exception classes
 class DeployExecError(Exception): pass
 # interface functions
+log = logging.getLogger('vDeploy.%s' % __name__)
 # classes
 class Deploy:
     def __init__(self, ctx, args):
-        self.log = logging.getLogger('vDeploy.%s' % __name__)
-        self.log.info("Starting deployment Engine")
+        log.info("Starting deployment Engine")
         # First, create some managed objects for the Hypervisors
         hvlist = []
         if not ctx.hdf:
@@ -32,9 +32,9 @@ class Deploy:
                 continue  #skip over the HV template description
             try:
                 hvobj = hypervisor.hypervisor_factory(hv)
-                self.log.info("Created Hypervisor managed object %x:%s" %(id(hvobj),hv['Name']))
+                log.info("Created Hypervisor managed object %x:%s" %(id(hvobj),hv['Name']))
             except hypervisor.HVCreateError, err:
-                self.log.warn("Error creating Hypervisor Managed Object %s" % err)
+                log.warn("Error creating Hypervisor Managed Object %s" % err)
                 hvobj = None
             hvlist.append(hvobj)
         # Now Create VM managed objects, bound to these Hypervisors
@@ -47,9 +47,9 @@ class Deploy:
                 continue  #skip over the VM template description
             try:
                 vmobj = hypervisor.vm_factory(vm,hvlist)
-                self.log.info("Created VM managed object %x:%s" %(id(vmobj),vm['Name']))
+                log.info("Created VM managed object %x:%s" %(id(vmobj),vm['Name']))
             except hypervisor.VMCreateError, err:
-                self.log.warn("Error creating VM Managed Object %s" % err)
+                log.warn("Error creating VM Managed Object %s" % err)
                 vmobj = None
             vmlist.append(vmobj)
 
@@ -58,7 +58,7 @@ class Deploy:
         self.hvtemplate = hvtemplate
         self.vmtemplate = vmtemplate
 
-        self.log.info("Ending deployment Engine")
+        log.info("Ending deployment Engine")
 
     def status(self):
         return( "done")

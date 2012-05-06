@@ -5,6 +5,7 @@
 # constants
 # exception classes
 # interface functions
+log = logging.getLogger('vDeploy.%s' % __name__)
 # classes
 # internal functions & classes
 

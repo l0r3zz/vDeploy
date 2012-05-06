@@ -73,11 +73,13 @@ class DDFLoadError(Exception): pass
 class DeployExecError(Exception): pass
 
 # interface functions
+log = logging.getLogger('vDeploy.%s' % __name__)
+
 # classes
 class DDFContext:
     def __init__(self,args):
-        self.log = logging.getLogger('vDeploy.%s' % __name__)
-        self.log.info("Starting config file processing")
+
+        log.info("Starting config file processing")
 
         # Scan for presence of config directory
         config_dir = './'
@@ -92,7 +94,7 @@ class DDFContext:
             if os.path.exists(self.hvpath):
                 self.hvtemplate =  yaml.load(file(self.hvpath))
                 if not self.hvtemplate:
-                    mylog.printlog(self.log,"%s is empty" % self.hvpath, 'INFO')
+                    mylog.printlog(log,"%s is empty" % self.hvpath, 'INFO')
             else:
                 raise DDFLoadError(self.hvpath)
 
@@ -100,7 +102,7 @@ class DDFContext:
             if os.path.exists(self.vmpath):
                 self.vmtemplate =  yaml.load(file(self.vmpath))
                 if not self.vmtemplate:
-                    mylog.printlog(self.log,"%s is empty" % self.vmpath, 'INFO')
+                    mylog.printlog(log,"%s is empty" % self.vmpath, 'INFO')
             else:
                 raise DDFLoadError(self.vmpath)
 
@@ -108,14 +110,14 @@ class DDFContext:
             if os.path.exists(self.netpath):
                 self.nettemplate =  yaml.load(file(self.netpath))
                 if not self.nettemplate:
-                    mylog.printlog(self.log,"%s is empty" % self.netpath, 'INFO')
+                    mylog.printlog(log,"%s is empty" % self.netpath, 'INFO')
             else:
                 raise DDFLoadError(self.netpath)
 
         except yaml.scanner.ScannerError,err:
-            self.log.error("Error in YAML config file " % err)       
+            log.error("Error in YAML config file " % err)       
 
-        self.log.info("Ending config file processing")
+        log.info("Ending config file processing")
 
     def process_ddf_files(self,args):
         """
@@ -125,7 +127,7 @@ class DDFContext:
         This context object can be passed off to the deployment engine for subsequent
         execution.
         """
-        self.log.info("Starting DDF file processing")
+        log.info("Starting DDF file processing")
 
 
         self.udf = (vidl(args.udf) if args.udf else None)
@@ -135,7 +137,7 @@ class DDFContext:
         self.ndf = (vidl(self.netpath,args.ndf) if args.ndf else None)
 
 
-        self.log.info("Ending DDF file processing")
+        log.info("Ending DDF file processing")
 
 # internal functions & classes
 

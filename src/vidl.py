@@ -3,9 +3,13 @@
 
 # imports
 import yaml
+import logging
+import mylog
 # constants
 # exception classes
 # interface functions
+log = logging.getLogger('vDeploy.%s' % __name__)
+
 def vidl(*args, **kwargs):
     loadstring = ''
     for file in args:

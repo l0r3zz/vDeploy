@@ -11,12 +11,11 @@ class DaemonError(Exception): pass
 
 
 # interface functions
-
+log = logging.getLogger('vDeploy.%s' % __name__)
 
 # classes
 class Server():
     def __init__(self,args):
-        log = logging.getLogger('vDeploy.%s' % __name__)
         log.info("Starting daemon service")
 
 

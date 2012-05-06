@@ -1,0 +1,29 @@
+# Examples of using the alias definition then using the merge function to alter
+# the attributes
+-
+        << : *VMDef
+        Name: virtualmachineA
+        MemSize: 2048
+        MgmtIP: 192.168.1.1
+-
+        << : *VMDef
+        Name: virtualmachineB
+        MemSize: 2048
+        MgmtIP: 192.168.1.2
+-
+        << : *VMDef
+        Name: virtualmachineC
+        MemSize: 1024
+        MgmtIP: 192.168.1.3
+        NicList : [ Nic 5 special ]
+-
+        << : *VMDef
+        Name: virtualmachineD
+        MgmtIP: 192.168.1.5
+# Trying to work out a macro capability, should be able to overload comments by
+# Having a special start comment like #@ followed by a  KEYWORD like the following...
+#
+#@XPDDEF [virtualmachine[E++]: << *BigServer { MgmtIP:192.168.1.6/24++, Name:xen[D++] }] * 64
+#
+# The above macro should define 64 additional "BigServer" type virtualmachines
+# Starting at IP address 192.168.1.6 and going to 192.168.1.69 with Names xenD - xenAAO
