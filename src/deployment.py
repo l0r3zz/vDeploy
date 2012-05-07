@@ -37,6 +37,8 @@ class Deploy:
                 log.warn("Error creating Hypervisor Managed Object %s" % err)
                 hvobj = None
             hvlist.append(hvobj)
+        ####  TESTING #####
+        session = hvlist[0].ctl_session()
         # Now Create VM managed objects, bound to these Hypervisors
         vmlist = []
         if not ctx.vdf:

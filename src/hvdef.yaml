@@ -10,7 +10,7 @@
         MgmtPass: password              # Password of privledge user
         MemtToken: None                 # Encryption token for passwordless authentication
         Description: None               # Any descriptive text can go here
-        HVType: None                    # Hypervisor type ESX|XENSERVER|HYPER-V|KVM|etc.
+        HVType: ESXi                    # Hypervisor type ESX|XENSERVER|HYPER-V|KVM|etc.
         HVVendor: vmware                # Vendor string
         HVVersion: None                 # Version of Hypervisor
         HVLicense: None                 # License type

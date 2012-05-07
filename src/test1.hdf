@@ -4,7 +4,8 @@
         << : *HVDef
         Name: HypervisorA
         MemSize: 2048
-        MgmtIP: 192.168.1.1
+        MgmtIP: 10.100.101.25
+        MgmtPass: vmware1
 -   #HypervisorB:
         << : *HVDef
         Name: HypervisorB

@@ -56,7 +56,7 @@ class Hypervisor:
 
         ctnl = pxssh.pxssh()
         ctnl.login(mgmtip, user,
-                           passwd, original_prompt='[#$]',
+                           passwd, original_prompt='[#$] ',
                            login_timeout=60,
                            auto_prompt_reset=False)
         # Add the newly created session to the session list
