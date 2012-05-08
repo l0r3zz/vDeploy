@@ -43,6 +43,8 @@ class Hypervisor:
         sesson.expect([pexpect.TIMEOUT, "~ #"], timeout=30)
 
     def ctl_session(self):
+        if len(self.hvdict["session_list"]) == self.hvdict["MaxCtlsessions"]:
+            raise HVCtlchannelError("Maximum number of control sessions has been reached")
         # create a control tunnel to the Hypervisor
         user = self.hvdict["MgmtUser"]
         if not user:
