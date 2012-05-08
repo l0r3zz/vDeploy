@@ -12,6 +12,7 @@ from copy import deepcopy
 class HVCreateError(Exception): pass
 class VMCreateError(Exception): pass
 class HVCtlchannelError(Exception): pass
+class HVUnimplemented(Exception): pass
 
 # interface functions
 log = logging.getLogger('vDeploy.%s' % __name__)
@@ -40,9 +41,10 @@ class Hypervisor:
         potentially incorrect results, including out of phase matching
         '''
         # consume the prompt (this is done a lot)
-        sesson.expect([pexpect.TIMEOUT, "~ #"], timeout=30)
+        session.expect([pexpect.TIMEOUT, "~ #"], timeout=30)
 
-    def ctl_session(self):
+    def ctl_session(self,orig_prompt='[#$] '):
+        self.orig_prompt = orig_prompt
         if len(self.hvdict["session_list"]) == self.hvdict["MaxCtlsessions"]:
             raise HVCtlchannelError("Maximum number of control sessions has been reached")
         # create a control tunnel to the Hypervisor
@@ -58,21 +60,29 @@ class Hypervisor:
 
         ctnl = pxssh.pxssh()
         ctnl.login(mgmtip, user,
-                           passwd, original_prompt='[#$] ',
-                           login_timeout=60,
+                           passwd, original_prompt=orig_prompt,
+                           login_timeout=10,
                            auto_prompt_reset=False)
         # Add the newly created session to the session list
         self.hvdict["session_list"].append(ctnl)
         return ctnl
 
     def restart(self, *args, **kwargs):
-        pass
+        raise HVUnimplemented("restart")
 
     def maintenance(self, *args, **kwargs):
-        pass
+        raise HVUnimplemented("maintenance")
 
     def shutdown(self, *args, **kwargs):
-        pass
+        raise HVUnimplemented("shutdown")
+
+    def sendcmd(self,chan,cmd,expect_string=None,timeout=3, op=None):
+        self._consume_prompt(chan)
+        op = op if op else self.orig_prompt
+        expect_string = expect_string if expect_string else self.orig_prompt
+        chan.sendline(cmd)
+        retval = chan.expect([pexpect.TIMEOUT, op, expect_string], timeout=timeout)
+        return (retval, chan.before, chan.after)
 
 # internal functions & classes
 

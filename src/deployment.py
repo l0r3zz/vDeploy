@@ -39,6 +39,7 @@ class Deploy:
             hvlist.append(hvobj)
         ####  TESTING #####
         session = hvlist[0].ctl_session()
+        print hvlist[0].sendcmd(session,'ls -l')
         # Now Create VM managed objects, bound to these Hypervisors
         vmlist = []
         if not ctx.vdf:
