@@ -20,14 +20,14 @@
         CpuSockets: 1                   # Number of Sockets
         MemSize: 1024                   # memory size in Megabytes
         NicNum: 1                       # Number of Physical Nics on the hosts
-        NicList :                       # TBD Data on the physical NICS for this Hypervisor
-            - Add
-            - Nic Definitions
-            - Here
-        vSwList:                        # TBD vSwitch specifications for this Hypervisor
-            - Add
-            - vSwitch Definitions
-            - Here
+        NicList :                       # Array of Dicts, one for each physical Nic on HV
+            -
+              vmnic0: vswitch0
+
+        vSwList:                        # Array of Dicts, one for each vSwitch Defined on HV
+            -
+              vswitch0: { portgroup: "VM Network" }
+
         RunList :                       # TBD Actions to be performed to stand-up/maint/take-down this HV
             -
                 action: start

@@ -16,11 +16,12 @@
           HVLicense: None                     # License type
           CpuVendor: Intel                    # Intel|AMD 
           MemSize: 128                        # memory size in Megabytes
-          NicNum: 1                           # Number of Physical Nics on the hosts
+          NicNum: 2                           # Number of Physical Nics on the hosts
           NicList :
-              - Add
-              - Nic Definitions
-              - Here
+              -
+                vmnic0: "vSwitch0"
+                vmnic1: "vSwitch1"
+
           RunList :
               -
                   action: start
