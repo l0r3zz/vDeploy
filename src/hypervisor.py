@@ -62,10 +62,13 @@ class Hypervisor:
             raise HVCtlchannelError("No Password specified")
 
         ctnl = pxssh.pxssh()
-        ctnl.login(mgmtip, user,
-                           passwd, original_prompt=orig_prompt,
-                           login_timeout=10,
-                           auto_prompt_reset=False)
+        try:
+            ctnl.login(mgmtip, user,
+                               passwd, original_prompt=orig_prompt,
+                               login_timeout=10,
+                               auto_prompt_reset=False)
+        except pexpect.EOF,e:
+            raise HVCtlchannelError("Login to Hypervisor @ %s Timedout: %s" % (mgmtip,e))
         # Add the newly created session to the session list
         self.hvdict["session_list"].append(ctnl)
         return ctnl

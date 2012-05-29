@@ -38,8 +38,12 @@ class Deploy:
                 hvobj = None
             hvlist.append(hvobj)
         ####  TESTING #####
-        session = hvlist[0].ctl_session()
-        print hvlist[0].sendcmd(session,'ls -l')
+        try:
+            session = hvlist[0].ctl_session()
+        except hypervisor.HVCtlchannelError:
+            log.warn("Login to Hypervisor failed")
+        else:
+            print hvlist[0].sendcmd(session,'ls -l')
         # Now Create VM managed objects, bound to these Hypervisors
         vmlist = []
         if not ctx.vdf:
