@@ -1,7 +1,7 @@
 # Test of Yaml code
 # This is the Hypervisor Definition File
+HVDef: 
 -
-
     _Template_HVDef: &HVDef                 # Define a template that can be called later
         Name: None                      # Could be the FQDN
         MgmtIP: 0.0.0.0                 # IP address of the management interface/console

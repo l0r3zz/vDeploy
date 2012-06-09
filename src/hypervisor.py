@@ -41,7 +41,7 @@ class Hypervisor:
         potentially incorrect results, including out of phase matching
         '''
         # consume the prompt (this is done a lot)
-        session.expect([pexpect.TIMEOUT, "~ #"], timeout=30)
+        session.expect([pexpect.TIMEOUT, "~ #"], timeout=2)
 
     def ctl_session(self,orig_prompt='[#$] '):
         ''' For Hypervisors that have CLI console that you can ssh into (most)

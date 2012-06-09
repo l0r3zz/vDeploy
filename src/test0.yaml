@@ -2,7 +2,7 @@
 # This is a prototype of VIDL (Virtual Infrastructure Descriptor Language)
 %TAG !! tag:durganetworks.com,2012:
 ---
-
+HVDef: 
 -     _Template_HVDef: &HVDef                 # Define a template that can be called later
           Name: None                          # Could be the FQDN
           MgmtIP: 0.0.0.0                     # IP address of the management interface/console
@@ -56,6 +56,11 @@
         << : *HVDef
         Name: HypervisorD
         MgmtIP: 192.168.1.5
+
+XEQ:                       # List of VMs to deploy
+            - {name: vm1, hv: HypervisorA,  state: power-on, niclist: ["VM Network","Challenge Network"] }
+            - {name: vm2, hv: HypervisorA,  state: power-on, niclist: ["VM Network","Challenge Network"] }
+
 # Trying to work out a macro capability, should be able to overload comments by
 # Having a special start comment like #@ followed by a  KEYWORD like the following...
 #

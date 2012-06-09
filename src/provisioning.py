@@ -37,7 +37,7 @@ This module reads the data from the definition files provided:
                     hdf file.
 <file>.udf          A YAML specification that combines the definitions of all of
                     the previous specifications (ddf, hdf, ndf,vdf). This can be
-                    used for deployments that will always per performed to
+                    used for deployments that will always be performed to
                     a fixed infrastructure. As a testing or debugging tool,
                     or as a "job" that can be submitted to a vDeploy daemon.
 
@@ -87,12 +87,13 @@ class DDFContext:
             if os.path.exists(dpath):
                 config_dir = dpath
                 break
-
+        self.ddfdict = {}
         # Attempt to load all of the data structure temple definitions
         try:
             self.hvpath = config_dir+HVDEF_TEMPLATE
             if os.path.exists(self.hvpath):
                 self.hvtemplate =  yaml.load(file(self.hvpath))
+                self.ddfdict['hdf'] = self.hvpath
                 if not self.hvtemplate:
                     mylog.printlog(log,"%s is empty" % self.hvpath, 'INFO')
             else:
@@ -101,6 +102,7 @@ class DDFContext:
             self.vmpath = config_dir+VMDEF_TEMPLATE
             if os.path.exists(self.vmpath):
                 self.vmtemplate =  yaml.load(file(self.vmpath))
+                self.ddfdict['vdf'] = self.vmpath
                 if not self.vmtemplate:
                     mylog.printlog(log,"%s is empty" % self.vmpath, 'INFO')
             else:
@@ -109,6 +111,7 @@ class DDFContext:
             self.netpath = config_dir+NETDEF_TEMPLATE
             if os.path.exists(self.netpath):
                 self.nettemplate =  yaml.load(file(self.netpath))
+                self.ddfdict['ndf'] = self.netpath
                 if not self.nettemplate:
                     mylog.printlog(log,"%s is empty" % self.netpath, 'INFO')
             else:
@@ -130,11 +133,16 @@ class DDFContext:
         log.info("Starting DDF file processing")
 
 
-        self.udf = (vidl(args.udf) if args.udf else None)
-        self.rdf = (vidl(args.rdf) if args.rdf else None)
-        self.vdf = (vidl(self.vmpath,args.vdf) if args.vdf else None)
-        self.hdf = (vidl(self.hvpath,args.hdf) if args.hdf else None)
-        self.ndf = (vidl(self.netpath,args.ndf) if args.ndf else None)
+        # The ddfdict contains the paths to the yaml files that describe the elements available to the vidl
+        # DSL. vDeploy is capable of processing i.e. {'vmpath':"/path/to/vmdef.yaml",
+        # 'hvpath':"/path/to/hvdef.yaml" }
+        # For universal deployment files which contain complete definitions
+        self.udf = (vidl(args.udf, **self.ddfdict) if args.udf else None)
+        self.rdf = (vidl(args.rdf, **self.ddfdict) if args.rdf else None)
+        self.ddf = (vidl(args.ddf, **self.ddfdict) if args.rdf else None)
+        self.vdf = (vidl(args.vdf, **self.ddfdict) if args.vdf else None)
+        self.hdf = (vidl(args.hdf, **self.ddfdict) if args.hdf else None)
+        self.ndf = (vidl(args.ndf, **self.ddfdict) if args.ndf else None)
 
 
         log.info("Ending DDF file processing")

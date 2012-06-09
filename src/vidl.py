@@ -2,6 +2,7 @@
 """Virtual Infrastructure Descriptor Language"""
 
 # imports
+import os
 import yaml
 import logging
 import mylog
@@ -11,8 +12,19 @@ import mylog
 log = logging.getLogger('vDeploy.%s' % __name__)
 
 def vidl(*args, **kwargs):
+    """ args  - one or more file names containing descriptor code
+        kwargs - a dict containing a mapping between descriptor filename
+                extensions and actual paths to the definition files
+                in the future this could be replaced with the preloaded
+                context for the extension but this is easiest for now
+    """
     loadstring = ''
+    #now read the file definitions
     for file in args:
+        ext = os.path.splitext(file)[1][1:] # get the extension without the dot
+        # load the internal definitions for the file type
+        loadstring += open(kwargs[ext]).read()
+        # now load the file
         loadstring += open(file).read()
     return yaml.load(loadstring)
 # classes

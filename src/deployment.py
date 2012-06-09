@@ -26,10 +26,10 @@ class Deploy:
         hvlist = []
         if not ctx.hdf:
             raise DeployExecError("No Hypervisors Provided")
-        for hv in ctx.hdf :
-            if '_Template_HVDef' in hv:
-                hvtemplate = hv
-                continue  #skip over the HV template description
+        # The JSON representational datastructure is a bit ugly, but it needs to be
+        # this way in order to facilitate the future implementation of ddf, rdf, and udf file formats.
+        hvtemplate = ctx.hdf['HVDef'][0]['_Template_HVDef']
+        for hv in ctx.hdf['HVDef'][1:]: # skip over the template dict
             try:
                 hvobj = hypervisor.hypervisor_factory(hv)
                 log.info("Created Hypervisor managed object %x:%s" %(id(hvobj),hv['Name']))
@@ -48,10 +48,9 @@ class Deploy:
         vmlist = []
         if not ctx.vdf:
             raise DeployExecError("No VMs specified to deploy")
-        for vm in ctx.vdf :
-            if '_Template_VMDef' in vm:
-                vmtemplate = vm
-                continue  #skip over the VM template description
+
+        vmtemplate = ctx.vdf['VMDef'][0]['_Template_VMDef']
+        for vm in ctx.vdf['VMDef'][1:]: #skip over the template dict
             try:
                 vmobj = hypervisor.vm_factory(vm,hvlist)
                 log.info("Created VM managed object %x:%s" %(id(vmobj),vm['Name']))

@@ -1,5 +1,6 @@
 # Examples of using the alias definition then using the merge function to alter
 # the attributes
+
 -   #HypervisorA:
         << : *HVDef
         Name: HypervisorA
