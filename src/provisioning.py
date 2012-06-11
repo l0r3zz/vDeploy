@@ -138,8 +138,8 @@ class DDFContext:
         # 'hvpath':"/path/to/hvdef.yaml" }
         # For universal deployment files which contain complete definitions
         self.udf = (vidl(args.udf, **self.ddfdict) if args.udf else None)
+        self.ddf = (vidl(args.ddf, **self.ddfdict) if args.ddf else None)
         self.rdf = (vidl(args.rdf, **self.ddfdict) if args.rdf else None)
-        self.ddf = (vidl(args.ddf, **self.ddfdict) if args.rdf else None)
         self.vdf = (vidl(args.vdf, **self.ddfdict) if args.vdf else None)
         self.hdf = (vidl(args.hdf, **self.ddfdict) if args.hdf else None)
         self.ndf = (vidl(args.ndf, **self.ddfdict) if args.ndf else None)

@@ -22,10 +22,18 @@ def vidl(*args, **kwargs):
     #now read the file definitions
     for file in args:
         ext = os.path.splitext(file)[1][1:] # get the extension without the dot
-        # load the internal definitions for the file type
-        loadstring += open(kwargs[ext]).read()
-        # now load the file
-        loadstring += open(file).read()
+        if ext == 'ddf':
+            loadstring += open(file).read()
+            continue
+        elif ext == 'rdf':
+            continue
+        elif ext == 'udf':
+            continue
+        else:
+            # load the internal definitions for the file type
+            loadstring += open(kwargs[ext]).read()
+            # now load the file
+            loadstring += open(file).read()
     return yaml.load(loadstring)
 # classes
 # internal functions & classes
