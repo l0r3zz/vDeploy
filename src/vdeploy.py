@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-#   Copyright (c) 2012 Geoffrey White
+#   Copyright (c) 2016 Geoffrey White
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ def main():
         sys.exit(exitcode)
     # Main program code starts here
     try:
-        # Gather and verify command line arguments 
+        # Gather and verify command line arguments
         args = getopts.vdeploy_options()
 
         # Start Logging
@@ -62,7 +62,7 @@ def main():
                 mylog.printlog(log,"Could not start as a service, exiting")
                 terminate(1)
         else:
-            # We're running on the command line, process the deployment definition 
+            # We're running on the command line, process the deployment definition
             # files and create the data structures to hand off to the deployment engine
             try:
                 ddf_context.process_ddf_files(args)
@@ -86,7 +86,7 @@ def main():
 
     except getopts.ArgparseError, e:
         print ("Argument ERROR: %s" % e)
-        sys.exit(1)  
+        sys.exit(1)
     except KeyboardInterrupt:
         log.error("^C pressed")
         print ""
