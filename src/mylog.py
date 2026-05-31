@@ -35,7 +35,7 @@ def logg(label, lfile=None, llevel='WARN', fmt=None, gmt=False, cnsl=None, sh=No
     ************************* doctest *************************************
     # when invoking mylog() set sh=sys.stdout this is needed for doctest
     >>> t = logg("test logger", cnsl=True, sh=sys.stdout) 
-    >>> print t # doctest: +ELLIPSIS
+    >>> print(t) # doctest: +ELLIPSIS
     <...logging.Logger object at 0x...>
     >>> t.warn("hello world!") #doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     2... WARNING    :test logger [...] hello world!
@@ -96,7 +96,7 @@ def printlog(logger, msg, level="WARN"):
 def main():
     logger = logg("Test Logger",llevel='INFO', cnsl=True,sh=sys.stdout)
     logger.info("Hello World")
-    logger.warn("Danger Will Robinson")
+    logger.warning("Danger Will Robinson")
     logger.critical("Time to Die")
     logger.debug("0x1337")
 #    import doctest

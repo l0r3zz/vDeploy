@@ -67,8 +67,8 @@ class Hypervisor:
                                passwd, original_prompt=orig_prompt,
                                login_timeout=10,
                                auto_prompt_reset=False)
-        except pexpect.EOF,e:
-            raise HVCtlchannelError("Login to Hypervisor @ %s Timedout: %s" % (mgmtip,e))
+        except pexpect.ExceptionPexpect as e:
+            raise HVCtlchannelError("Login to Hypervisor @ %s failed: %s" % (mgmtip,e))
         # Add the newly created session to the session list
         self.hvdict["session_list"].append(ctnl)
         return ctnl
@@ -135,8 +135,8 @@ class Hypervisor:
     def vm_start(self, *args, **kwargs):
         raise HVUnimplemented("vm_start")
 
-    def vm_stop(selfself,*args, **kwargs):
-        raise HVUnimplementer("vm_stop")
+    def vm_stop(self, *args, **kwargs):
+        raise HVUnimplemented("vm_stop")
 
     def vm_restart(self, *args, **kwargs):
         raise HVUnimplemented("vm_restart")
@@ -144,11 +144,11 @@ class Hypervisor:
     def vm_suspend(self, *args, **kwargs):
         raise HVUnimplemented("vm_suspend")
 
-    def vm_query_ip(selfself,*args, **kwargs):
-        raise HVUnimplementer("vm_query_ip")
+    def vm_query_ip(self, *args, **kwargs):
+        raise HVUnimplemented("vm_query_ip")
 
-    def vm_destroy(selfself,*args, **kwargs):
-        raise HVUnimplementer("vm_destroy")
+    def vm_destroy(self, *args, **kwargs):
+        raise HVUnimplemented("vm_destroy")
 
 
 # internal functions & classes

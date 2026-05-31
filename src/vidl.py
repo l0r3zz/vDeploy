@@ -34,7 +34,7 @@ def vidl(*args, **kwargs):
             loadstring += open(kwargs[ext]).read()
             # now load the file
             loadstring += open(file).read()
-    return yaml.load(loadstring)
+    return yaml.safe_load(loadstring)
 # classes
 # internal functions & classes
 

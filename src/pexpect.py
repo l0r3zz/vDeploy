@@ -66,11 +66,9 @@ $Id: pexpect.py 507 2007-12-27 02:40:52Z noah $
 try:
     import os, sys, time
     import select
-    import string
     import re
     import struct
     import resource
-    import types
     import pty
     import tty
     import termios
@@ -78,8 +76,8 @@ try:
     import errno
     import traceback
     import signal
-except ImportError, e:
-    raise ImportError (str(e) + """
+except ImportError as e:
+    raise ImportError(str(e) + """
 
 A critical module was not found. Probably this operating system does not
 support it. Pexpect is intended for UNIX-like operating systems.""")
@@ -198,7 +196,7 @@ def run (command, timeout=-1, withexitstatus=False, events=None, extra_args=None
 
         from pexpect import *
         def print_ticks(d):
-            print d['event_count'],
+            print(d['event_count'], end=' ')
         run ("mencoder dvd://1 -o video.avi -oac copy -ovc copy", events={TIMEOUT:print_ticks}, timeout=5)
 
     The 'events' argument should be a dictionary of patterns and responses.
@@ -220,8 +218,8 @@ def run (command, timeout=-1, withexitstatus=False, events=None, extra_args=None
     else:
         child = spawn(command, timeout=timeout, maxread=2000, logfile=logfile, cwd=cwd, env=env)
     if events is not None:
-        patterns = events.keys()
-        responses = events.values()
+        patterns = list(events.keys())
+        responses = list(events.values())
     else:
         patterns=None # We assume that EOF or TIMEOUT will save us.
         responses=None
@@ -230,26 +228,26 @@ def run (command, timeout=-1, withexitstatus=False, events=None, extra_args=None
     while 1:
         try:
             index = child.expect (patterns)
-            if type(child.after) in types.StringTypes:
+            if isinstance(child.after, str):
                 child_result_list.append(child.before + child.after)
             else: # child.after may have been a TIMEOUT or EOF, so don't cat those.
                 child_result_list.append(child.before)
-            if type(responses[index]) in types.StringTypes:
+            if isinstance(responses[index], str):
                 child.send(responses[index])
-            elif type(responses[index]) is types.FunctionType:
+            elif callable(responses[index]):
                 callback_result = responses[index](locals())
                 sys.stdout.flush()
-                if type(callback_result) in types.StringTypes:
+                if isinstance(callback_result, str):
                     child.send(callback_result)
                 elif callback_result:
                     break
             else:
                 raise TypeError ('The callback must be a string or function type.')
             event_count = event_count + 1
-        except TIMEOUT, e:
+        except TIMEOUT as e:
             child_result_list.append(child.before)
             break
-        except EOF, e:
+        except EOF as e:
             child_result_list.append(child.before)
             break
     child_result = ''.join(child_result_list)
@@ -324,7 +322,7 @@ class spawn (object):
         Example log input and output to a file::
 
             child = pexpect.spawn('some_command')
-            fout = file('mylog.txt','w')
+            fout = open('mylog.txt','w')
             child.logfile = fout
 
         Example log to stdout::
@@ -408,7 +406,7 @@ class spawn (object):
         self.delayafterterminate = 0.1 # Sets delay in terminate() method to allow kernel time to update process status. Time in seconds.
         self.softspace = False # File-like object.
         self.name = '<' + repr(self) + '>' # File-like object.
-        self.encoding = None # File-like object.
+        self.encoding = 'utf-8' # decode child output with this codec
         self.closed = True # File-like object.
         self.cwd = cwd
         self.env = env
@@ -497,10 +495,10 @@ class spawn (object):
         # that performs some task; creates no stdout output; and then dies.
 
         # If command is an int type then it may represent a file descriptor.
-        if type(command) == type(0):
+        if isinstance(command, int):
             raise ExceptionPexpect ('Command is an int type. If this is a file descriptor then maybe you want to use fdpexpect.fdspawn which takes an existing file descriptor instead of a command string.')
 
-        if type (args) != type([]):
+        if not isinstance(args, list):
             raise TypeError ('The argument, args, must be a list.')
 
         if args == []:
@@ -525,7 +523,7 @@ class spawn (object):
         if self.use_native_pty_fork:
             try:
                 self.pid, self.child_fd = pty.fork()
-            except OSError, e:
+            except OSError as e:
                 raise ExceptionPexpect('Error! pty.fork() failed: ' + str(e))
         else: # Use internal __fork_pty
             self.pid, self.child_fd = self.__fork_pty()
@@ -581,11 +579,11 @@ class spawn (object):
 
         parent_fd, child_fd = os.openpty()
         if parent_fd < 0 or child_fd < 0:
-            raise ExceptionPexpect, "Error! Could not open pty with os.openpty()."
+            raise ExceptionPexpect("Error! Could not open pty with os.openpty().")
 
         pid = os.fork()
         if pid < 0:
-            raise ExceptionPexpect, "Error! Failed os.fork()."
+            raise ExceptionPexpect("Error! Failed os.fork().")
         elif pid == 0:
             # Child.
             os.close(parent_fd)
@@ -623,22 +621,24 @@ class spawn (object):
             fd = os.open("/dev/tty", os.O_RDWR | os.O_NOCTTY);
             if fd >= 0:
                 os.close(fd)
-                raise ExceptionPexpect, "Error! We are not disconnected from a controlling tty."
+                raise ExceptionPexpect("Error! We are not disconnected from a controlling tty.")
+        except ExceptionPexpect:
+            raise  # propagate the deliberate error; don't swallow it
         except:
-            # Good! We are disconnected from a controlling tty.
+            # Good! os.open raised OSError — we are disconnected from a controlling tty.
             pass
 
         # Verify we can open child pty.
         fd = os.open(child_name, os.O_RDWR);
         if fd < 0:
-            raise ExceptionPexpect, "Error! Could not open child pty, " + child_name
+            raise ExceptionPexpect("Error! Could not open child pty, " + child_name)
         else:
             os.close(fd)
 
         # Verify we now have a controlling tty.
         fd = os.open("/dev/tty", os.O_WRONLY)
         if fd < 0:
-            raise ExceptionPexpect, "Error! Could not open controlling tty, /dev/tty"
+            raise ExceptionPexpect("Error! Could not open controlling tty, /dev/tty")
         else:
             os.close(fd)
 
@@ -674,6 +674,13 @@ class spawn (object):
         File-like object. """
 
         pass
+
+    def _log_write(self, fileobj, s):
+        """Write str to fileobj, falling back to bytes for binary-mode files."""
+        try:
+            fileobj.write(s)
+        except TypeError:
+            fileobj.write(s.encode(self.encoding, errors='replace'))
 
     def isatty (self):   # File-like object.
 
@@ -826,18 +833,20 @@ class spawn (object):
         if self.child_fd in r:
             try:
                 s = os.read(self.child_fd, size)
-            except OSError, e: # Linux does this
+            except OSError as e: # Linux does this
                 self.flag_eof = True
                 raise EOF ('End Of File (EOF) in read_nonblocking(). Exception style platform.')
-            if s == '': # BSD style
+            if s == b'': # BSD style
                 self.flag_eof = True
                 raise EOF ('End Of File (EOF) in read_nonblocking(). Empty string style platform.')
 
+            s = s.decode(self.encoding, errors='replace')
+
             if self.logfile is not None:
-                self.logfile.write (s)
+                self._log_write(self.logfile, s)
                 self.logfile.flush()
             if self.logfile_read is not None:
-                self.logfile_read.write (s)
+                self._log_write(self.logfile_read, s)
                 self.logfile_read.flush()
 
             return s
@@ -897,7 +906,7 @@ class spawn (object):
 
         return self
 
-    def next (self):    # File-like object.
+    def __next__(self):    # File-like object.
 
         """This is to support iterators over a file-like object.
         """
@@ -906,6 +915,8 @@ class spawn (object):
         if result == "":
             raise StopIteration
         return result
+
+    next = __next__  # backward compatibility
 
     def readlines (self, sizehint = -1):    # File-like object.
 
@@ -944,11 +955,13 @@ class spawn (object):
         the log. """
 
         time.sleep(self.delaybeforesend)
+        if isinstance(s, str):
+            s = s.encode(self.encoding)
         if self.logfile is not None:
-            self.logfile.write (s)
+            self._log_write(self.logfile, s.decode(self.encoding, errors='replace'))
             self.logfile.flush()
         if self.logfile_send is not None:
-            self.logfile_send.write (s)
+            self._log_write(self.logfile_send, s.decode(self.encoding, errors='replace'))
             self.logfile_send.flush()
         c = os.write(self.child_fd, s)
         return c
@@ -1071,7 +1084,7 @@ class spawn (object):
                 else:
                     return False
             return False
-        except OSError, e:
+        except OSError as e:
             # I think there are kernel timing issues that sometimes cause
             # this to happen. I think isalive() reports True, but the
             # process is dead to the kernel.
@@ -1130,11 +1143,11 @@ class spawn (object):
 
         try:
             pid, status = os.waitpid(self.pid, waitpid_options)
-        except OSError, e: # No child processes
-            if e[0] == errno.ECHILD:
+        except OSError as e: # No child processes
+            if e.args[0] == errno.ECHILD:
                 raise ExceptionPexpect ('isalive() encountered condition where "terminated" is 0, but there was no child process. Did someone else call waitpid() on our process?')
             else:
-                raise e
+                raise
 
         # I have to do this twice for Solaris. I can't even believe that I figured this out...
         # If waitpid() returns 0 it means that no child process wishes to
@@ -1142,11 +1155,11 @@ class spawn (object):
         if pid == 0:
             try:
                 pid, status = os.waitpid(self.pid, waitpid_options) ### os.WNOHANG) # Solaris!
-            except OSError, e: # This should never happen...
-                if e[0] == errno.ECHILD:
+            except OSError as e: # This should never happen...
+                if e.args[0] == errno.ECHILD:
                     raise ExceptionPexpect ('isalive() encountered condition that should never happen. There was no child process. Did someone else call waitpid() on our process?')
                 else:
-                    raise e
+                    raise
 
             # If pid is still 0 after two calls to waitpid() then
             # the process really is alive. This seems to work on all platforms, except
@@ -1209,7 +1222,7 @@ class spawn (object):
 
         if patterns is None:
             return []
-        if type(patterns) is not types.ListType:
+        if not isinstance(patterns, list):
             patterns = [patterns]
 
         compile_flags = re.DOTALL # Allow dot to match \n
@@ -1217,7 +1230,7 @@ class spawn (object):
             compile_flags = compile_flags | re.IGNORECASE
         compiled_pattern_list = []
         for p in patterns:
-            if type(p) in types.StringTypes:
+            if isinstance(p, str):
                 compiled_pattern_list.append(re.compile(p, compile_flags))
             elif p is EOF:
                 compiled_pattern_list.append(EOF)
@@ -1226,7 +1239,7 @@ class spawn (object):
             elif type(p) is type(re.compile('')):
                 compiled_pattern_list.append(p)
             else:
-                raise TypeError ('Argument must be one of StringTypes, EOF, TIMEOUT, SRE_Pattern, or a list of those type. %s' % str(type(p)))
+                raise TypeError ('Argument must be one of str, EOF, TIMEOUT, SRE_Pattern, or a list of those types. %s' % str(type(p)))
 
         return compiled_pattern_list
 
@@ -1302,7 +1315,7 @@ class spawn (object):
 
                 p = pexpect.spawn('/bin/ls')
                 p.expect (pexpect.EOF)
-                print p.before
+                print(p.before)
 
         If you are trying to optimize for speed then see expect_list().
         """
@@ -1338,7 +1351,7 @@ class spawn (object):
         This method is also useful when you don't want to have to worry about
         escaping regular expression characters that you want to match."""
 
-        if type(pattern_list) in types.StringTypes or pattern_list in (TIMEOUT, EOF):
+        if isinstance(pattern_list, str) or pattern_list in (TIMEOUT, EOF):
             pattern_list = [pattern_list]
         return self.expect_loop(searcher_string(pattern_list), timeout, searchwindowsize)
 
@@ -1381,7 +1394,7 @@ class spawn (object):
                 incoming = incoming + c
                 if timeout is not None:
                     timeout = end_time - time.time()
-        except EOF, e:
+        except EOF as e:
             self.buffer = ''
             self.before = incoming
             self.after = EOF
@@ -1394,7 +1407,7 @@ class spawn (object):
                 self.match = None
                 self.match_index = None
                 raise EOF (str(e) + '\n' + str(self))
-        except TIMEOUT, e:
+        except TIMEOUT as e:
             self.buffer = incoming
             self.before = incoming
             self.after = TIMEOUT
@@ -1419,7 +1432,7 @@ class spawn (object):
         """This returns the terminal window size of the child tty. The return
         value is a tuple of (rows, cols). """
 
-        TIOCGWINSZ = getattr(termios, 'TIOCGWINSZ', 1074295912L)
+        TIOCGWINSZ = getattr(termios, 'TIOCGWINSZ', 1074295912)
         s = struct.pack('HHHH', 0, 0, 0, 0)
         x = fcntl.ioctl(self.fileno(), TIOCGWINSZ, s)
         return struct.unpack('HHHH', x)[0:2]
@@ -1441,7 +1454,7 @@ class spawn (object):
         # Newer versions of Linux have totally different values for TIOCSWINSZ.
         # Note that this fix is a hack.
         TIOCSWINSZ = getattr(termios, 'TIOCSWINSZ', -2146929561)
-        if TIOCSWINSZ == 2148037735L: # L is not required in Python >= 2.2.
+        if TIOCSWINSZ == 2148037735: # was 2148037735L in Python 2
             TIOCSWINSZ = -2146929561 # Same bits, but with sign.
         # Note, assume ws_xpixel and ws_ypixel are zero.
         s = struct.pack('HHHH', r, c, 0, 0)
@@ -1498,7 +1511,9 @@ class spawn (object):
         """This is used by the interact() method.
         """
 
-        while data != '' and self.isalive():
+        if isinstance(data, str):
+            data = data.encode(self.encoding)
+        while data != b'' and self.isalive():
             n = os.write(fd, data)
             data = data[n:]
 
@@ -1507,7 +1522,7 @@ class spawn (object):
         """This is used by the interact() method.
         """
 
-        return os.read(fd, 1000)
+        return os.read(fd, 1000).decode(self.encoding, errors='replace')
 
     def __interact_copy(self, escape_character = None, input_filter = None, output_filter = None):
 
@@ -1520,9 +1535,9 @@ class spawn (object):
                 data = self.__interact_read(self.child_fd)
                 if output_filter: data = output_filter(data)
                 if self.logfile is not None:
-                    self.logfile.write (data)
+                    self._log_write(self.logfile, data)
                     self.logfile.flush()
-                os.write(self.STDOUT_FILENO, data)
+                os.write(self.STDOUT_FILENO, data.encode(self.encoding))
             if self.STDIN_FILENO in r:
                 data = self.__interact_read(self.STDIN_FILENO)
                 if input_filter: data = input_filter(data)
@@ -1547,8 +1562,8 @@ class spawn (object):
         while True:
             try:
                 return select.select (iwtd, owtd, ewtd, timeout)
-            except select.error, e:
-                if e[0] == errno.EINTR:
+            except OSError as e:
+                if e.args[0] == errno.EINTR:
                     # if we loop back we have to subtract the amount of time we already waited.
                     if timeout is not None:
                         timeout = end_time - time.time()
@@ -1624,7 +1639,7 @@ class searcher_string (object):
         if self.timeout_index >= 0:
             ss.append ((self.timeout_index,'    %d: TIMEOUT' % self.timeout_index))
         ss.sort()
-        ss = zip(*ss)[1]
+        ss = list(zip(*ss))[1]
         return '\n'.join(ss)
 
     def search(self, buffer, freshlen, searchwindowsize=None):
@@ -1722,7 +1737,7 @@ class searcher_re (object):
         if self.timeout_index >= 0:
             ss.append ((self.timeout_index,'    %d: TIMEOUT' % self.timeout_index))
         ss.sort()
-        ss = zip(*ss)[1]
+        ss = list(zip(*ss))[1]
         return '\n'.join(ss)
 
     def search(self, buffer, freshlen, searchwindowsize=None):
@@ -1771,7 +1786,7 @@ def which (filename):
         if os.access (filename, os.X_OK):
             return filename
 
-    if not os.environ.has_key('PATH') or os.environ['PATH'] == '':
+    if 'PATH' not in os.environ or os.environ['PATH'] == '':
         p = os.defpath
     else:
         p = os.environ['PATH']
@@ -1779,7 +1794,7 @@ def which (filename):
     # Oddly enough this was the one line that made Pexpect
     # incompatible with Python 1.5.2.
     #pathlist = p.split (os.pathsep)
-    pathlist = string.split (p, os.pathsep)
+    pathlist = p.split(os.pathsep)
 
     for path in pathlist:
         f = os.path.join(path, filename)

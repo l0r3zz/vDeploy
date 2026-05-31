@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 #   Copyright (c) 2016 Geoffrey White
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +50,7 @@ def main():
         # Load the Hypervisor, VM and Network Definition Files (YAML data structure templates)
         try:
             ddf_context = provisioning.DDFContext(args)
-        except provisioning.DDFLoadError, err:
+        except provisioning.DDFLoadError as err:
             mylog.printlog(log,"Descriptor configuration file not found: %s" % err, 'ERROR')
             terminate(1)
 
@@ -66,7 +66,7 @@ def main():
             # files and create the data structures to hand off to the deployment engine
             try:
                 ddf_context.process_ddf_files(args)
-            except provisioning.DDFLoadError, err:
+            except provisioning.DDFLoadError as err:
                 mylog.printlog(log,"Error processing description file: %s" % err)
                 terminate(1)
             # Now that the context has the deployment structure instantiated, send it off
@@ -77,19 +77,19 @@ def main():
                 while deploy_context.status() == "executing":
                     continue
 
-            except deployment.DeployExecError, err:
+            except deployment.DeployExecError as err:
                 mylog.printlog(log,"Deploy Failed: %s" % err, 'ERROR')
                 terminate(1)
 
         log.info("program exiting normally")
         return(0)
 
-    except getopts.ArgparseError, e:
-        print ("Argument ERROR: %s" % e)
+    except getopts.ArgparseError as e:
+        print("Argument ERROR: %s" % e)
         sys.exit(1)
     except KeyboardInterrupt:
         log.error("^C pressed")
-        print ""
+        print("")
         terminate(1)
 
 

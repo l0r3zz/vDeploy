@@ -8,8 +8,6 @@ import os
 import sys
 import mylog
 import logging
-import yaml
-import simplejson
 import provisioning
 import hypervisor
 
@@ -33,17 +31,18 @@ class Deploy:
             try:
                 hvobj = hypervisor.hypervisor_factory(hv)
                 log.info("Created Hypervisor managed object %x:%s" %(id(hvobj),hv['Name']))
-            except hypervisor.HVCreateError, err:
-                log.warn("Error creating Hypervisor Managed Object %s" % err)
+            except hypervisor.HVCreateError as err:
+                log.warning("Error creating Hypervisor Managed Object %s" % err)
                 hvobj = None
             hvlist.append(hvobj)
         ####  TESTING #####
-        try:
-            session = hvlist[0].ctl_session()
-        except hypervisor.HVCtlchannelError:
-            log.warn("Login to Hypervisor failed")
-        else:
-            print hvlist[0].sendcmd(session,'ls -l')
+        if hvlist and hvlist[0] is not None:
+            try:
+                session = hvlist[0].ctl_session()
+            except hypervisor.HVCtlchannelError:
+                log.warning("Login to Hypervisor failed")
+            else:
+                print(hvlist[0].sendcmd(session,'ls -l'))
         # Now Create VM managed objects, bound to these Hypervisors
         vmlist = []
         if not ctx.vdf:
@@ -54,8 +53,8 @@ class Deploy:
             try:
                 vmobj = hypervisor.vm_factory(vm,hvlist)
                 log.info("Created VM managed object %x:%s" %(id(vmobj),vm['Name']))
-            except hypervisor.VMCreateError, err:
-                log.warn("Error creating VM Managed Object %s" % err)
+            except hypervisor.VMCreateError as err:
+                log.warning("Error creating VM Managed Object %s" % err)
                 vmobj = None
             vmlist.append(vmobj)
 

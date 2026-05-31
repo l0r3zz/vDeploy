@@ -35,23 +35,23 @@ class pxssh (spawn):
         import getpass
         try:
             s = pxssh.pxssh()
-            hostname = raw_input('hostname: ')
-            username = raw_input('username: ')
+            hostname = input('hostname: ')
+            username = input('username: ')
             password = getpass.getpass('password: ')
             s.login (hostname, username, password)
             s.sendline ('uptime')  # run a command
             s.prompt()             # match the prompt
-            print s.before         # print everything before the prompt.
+            print(s.before)        # print everything before the prompt.
             s.sendline ('ls -l')
             s.prompt()
-            print s.before
+            print(s.before)
             s.sendline ('df')
             s.prompt()
-            print s.before
+            print(s.before)
             s.logout()
-        except pxssh.ExceptionPxssh, e:
-            print "pxssh failed on login."
-            print str(e)
+        except pxssh.ExceptionPxssh as e:
+            print("pxssh failed on login.")
+            print(str(e))
 
     Note that if you have ssh-agent running while doing development with pxssh
     then this can lead to a lot of confusion. Many X display managers (xdm,
@@ -64,8 +64,8 @@ class pxssh (spawn):
 
             s = pxssh.pxssh()
             s.force_password = True
-            hostname = raw_input('hostname: ')
-            username = raw_input('username: ')
+            hostname = input('hostname: ')
+            username = input('username: ')
             password = getpass.getpass('password: ')
             s.login (hostname, username, password)
     """
@@ -85,12 +85,12 @@ class pxssh (spawn):
         #prompt command different than the regex.
 
         # used to match the command-line prompt
-        self.UNIQUE_PROMPT = "\[PEXPECT\][\$\#] "
+        self.UNIQUE_PROMPT = r"\[PEXPECT\][\$\#] "
         self.PROMPT = self.UNIQUE_PROMPT
 
         # used to set shell command-line prompt to UNIQUE_PROMPT.
-        self.PROMPT_SET_SH = "PS1='[PEXPECT]\$ '"
-        self.PROMPT_SET_CSH = "set prompt='[PEXPECT]\$ '"
+        self.PROMPT_SET_SH = r"PS1='[PEXPECT]\$ '"
+        self.PROMPT_SET_CSH = r"set prompt='[PEXPECT]\$ '"
         # disabling this so that we can use RSA public keys
         #self.SSH_OPTS = "-o'RSAAuthentication=no' -o 'PubkeyAuthentication=no'"
         # Disabling X11 forwarding gets rid of the annoying SSH_ASKPASS from
@@ -164,7 +164,7 @@ class pxssh (spawn):
         max_attempts = 4
         #log.debug("Synch_original_prompt function")
         last = self.read_nonblocking(size=1000,timeout=1)
-        for i in xrange(max_attempts):
+        for i in range(max_attempts):
             time.sleep(0.5)
             self.sendline()
             time.sleep(0.5)

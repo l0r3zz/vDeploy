@@ -55,7 +55,6 @@ import sys
 import mylog
 import logging
 import yaml
-import simplejson
 from vidl import vidl
 
 # constants
@@ -92,7 +91,7 @@ class DDFContext:
         try:
             self.hvpath = config_dir+HVDEF_TEMPLATE
             if os.path.exists(self.hvpath):
-                self.hvtemplate =  yaml.load(file(self.hvpath))
+                self.hvtemplate =  yaml.safe_load(open(self.hvpath))
                 self.ddfdict['hdf'] = self.hvpath
                 if not self.hvtemplate:
                     mylog.printlog(log,"%s is empty" % self.hvpath, 'INFO')
@@ -101,7 +100,7 @@ class DDFContext:
 
             self.vmpath = config_dir+VMDEF_TEMPLATE
             if os.path.exists(self.vmpath):
-                self.vmtemplate =  yaml.load(file(self.vmpath))
+                self.vmtemplate =  yaml.safe_load(open(self.vmpath))
                 self.ddfdict['vdf'] = self.vmpath
                 if not self.vmtemplate:
                     mylog.printlog(log,"%s is empty" % self.vmpath, 'INFO')
@@ -110,15 +109,15 @@ class DDFContext:
 
             self.netpath = config_dir+NETDEF_TEMPLATE
             if os.path.exists(self.netpath):
-                self.nettemplate =  yaml.load(file(self.netpath))
+                self.nettemplate =  yaml.safe_load(open(self.netpath))
                 self.ddfdict['ndf'] = self.netpath
                 if not self.nettemplate:
                     mylog.printlog(log,"%s is empty" % self.netpath, 'INFO')
             else:
                 raise DDFLoadError(self.netpath)
 
-        except yaml.scanner.ScannerError,err:
-            log.error("Error in YAML config file " % err)       
+        except yaml.scanner.ScannerError as err:
+            log.error("Error in YAML config file: %s" % err)
 
         log.info("Ending config file processing")
 
